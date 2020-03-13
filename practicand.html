@@ -89,6 +89,7 @@
         //console.log(response[0][0]["timeInterval"]["end"]);
         //console.log(response[1][1]["timeInterval"]["start"].substring(11, 19));
         let LOGS = [];
+        let keysDate = [];
         for (let x = 0; x < response.length; x++) {
             let startDate;
             let endDate;
@@ -112,20 +113,20 @@
                 startDate = response[x][z]["timeInterval"]["start"].substring(0, 10);
                 endDate = response[x][z]["timeInterval"]["end"].substring(0, 10);
 
-
+                if(!keysDate.includes(endDate)){
+                    keysDate.push(endDate);
+                }
                 
                 LOGS[endDate] = [startDate,startH,endDate,endH];
             }
-        }
-        let person = {firstName:"John", lastName:"Doe", age:46};
-        console.log(LOGS.length)
-        console.log(LOGS)
-        console.log(LOGS["2020-01-24"])
-       /*  for (let item of LOGS) {
-            console.log(item);
-           text+= "<p>Start Date: "+item[0]+" Time: from "+item[1]+" to "+item[3]+"</p>"
             
-        } */
+        }
+        
+        for (let i = 0; i < keysDate.length; i++) {
+            
+           text+= "<p>Start Date: "+LOGS[keysDate[i]][0]+" Time: from "+LOGS[keysDate[i]][1]+" to "+LOGS[keysDate[i]][3]+"</p>"
+            
+        }
         document.getElementById('view2').innerHTML=text;
 
     }
