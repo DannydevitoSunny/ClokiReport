@@ -1,141 +1,188 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
-<script>
-    function newRequest(){
-        let url = 'https://api.clockify.me/api/v1/workspaces/5c334808b079874ebdd7c345/users';
-        var xhttp = new XMLHttpRequest();
-
-        xhttp.open('GET', url, true);
-        xhttp.setRequestHeader("Content-type", "application/json");
-        xhttp.setRequestHeader("X-Api-Key", "XWor3IxeV2M9g/mQ");
-        xhttp.send();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-            let answer= this.responseText;
-            answer  = JSON.parse(answer);
-            getUsers(answer);
-        
-            }
-        }
-    }
+import React from 'react';
 
 
-    function getUsers(response){
-        let text;
-        let users = [];
-        for (const user of response) {
-            users.push({"name":user.name, "id":user.id, "workspace":user.activeWorkspace});
-            text+="<ol>";
-            text+="<li>id :"+user.id+"</li>";
-            text+="<li>email: "+user.email+"</li>";
-            text+="<li>name: "+user.name+"</li>";
-            text+="<li>workspace id :"+user.activeWorkspace+"</li>";
-            text+="</ol>";
-            text+="<br/><hr/>";
-        }
-        document.getElementById('view').innerHTML=text;;
-        for (let x = 0; x < users.length; x++){
-             getLogs(users[x].workspace, users[x].id);
-                if(x == users.length-1 ){
-                    document.getElementById("info").disabled=false;
-                    document.getElementById("info").onclick = ()=>{
-                        showDatelogs(l, users); 
-                    }
-
-                }
-            }
+class Info extends React.Component {
+    constructor(props) {
+        super(props);
+        this.logResponse = [];  
+        this.users = []; 
+        this.LOGS = {};
+        this.keysDate = [];
+        this.state ={
+            usersData : "",
+            log :"",
+            butState : true
         }
 
+        //--------------- M E T H O D S ---------------------------
 
-
-
-    
-    function getLogs(usersworkspace, usersid){
-        //XWor3IxeV2M9g/mQ -- clave alejandro
-        //Xmiz4o3aZjHM5X7l -- mi clave
-        var xhttp = new XMLHttpRequest();
-        let url = 'https://api.clockify.me/api/v1/workspaces/'+usersworkspace+'/user/'+usersid+'/time-entries';
-        xhttp.open('GET', url, true);
-        xhttp.setRequestHeader("Content-type", "application/json");
-        
-        xhttp.setRequestHeader("X-Api-Key", "XWor3IxeV2M9g/mQ");
-        xhttp.send();
-        xhttp.onload = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                let answer= this.responseText;
-                answer = JSON.parse(answer);
-                l.push(answer)
-                return answer;
-            }      
-        }
-
-        
-
-    }
-
-    function showDatelogs(response, users){
-        let text=""  
-        
-        //console.log(response[0][0]["timeInterval"]["end"]);
-        //console.log(response[1][1]["timeInterval"]["start"].substring(11, 19));
-        let LOGS = [];
-        let keysDate = [];
-        for (let x = 0; x < response.length; x++) {
-            let startDate;
-            let endDate;
-            let startH, endH;
-            let name;
-    
+        this.getLogs =(usersworkspace, usersid)=>{
+            //XWor3IxeV2M9g/mQ -- clave alejandro
+            //Xmiz4o3aZjHM5X7l -- mi clavegit
+            var xhttp = new XMLHttpRequest();
+            let url = 'https://api.clockify.me/api/v1/workspaces/'+usersworkspace+'/user/'+usersid+'/time-entries';
+            xhttp.open('GET', url, true);
+            xhttp.setRequestHeader("Content-type", "application/json");
             
-            let z = response[x].length-1
-            for (z; z >= 0; z--) {
-                if (response[x][z]["timeInterval"]["end"] == null) {
-                    startH = response[x][z]["timeInterval"]["start"].substring(11, 19);
-                    endH = "UNKNOWN"
-                    startDate = response[x][z]["timeInterval"]["start"].substring(0, 10);
-                    endDate = "UNKNOWN"
+            xhttp.setRequestHeader("X-Api-Key", "XWor3IxeV2M9g/mQ");
+            xhttp.send();
+            xhttp.onload = function() {
+                if (this.readyState === 4 && this.status === 200) {
+                    let answer= this.responseText;
+                    answer = JSON.parse(answer);
+                    add(answer);
+                } 
+            }
+            let add = (answer)=>{
+                this.logResponse.push(answer);
 
-                    LOGS[endDate] = [startDate,startH,endDate,endH];
-                    continue;
-                }
-                startH = response[x][z]["timeInterval"]["start"].substring(11, 19);
-                endH = response[x][z]["timeInterval"]["end"].substring(11, 19);
-                startDate = response[x][z]["timeInterval"]["start"].substring(0, 10);
-                endDate = response[x][z]["timeInterval"]["end"].substring(0, 10);
+            }
 
-                if(!keysDate.includes(endDate)){
-                    keysDate.push(endDate);
+        }
+
+        this.getUsers= ()=> {
+            //New request clear the old data (refresh)
+            this.logResponse = [];  
+            this.users = [];
+            this.LOGS = [];
+            this.keysDate = [];
+            let url = 'https://api.clockify.me/api/v1/workspaces/5c334808b079874ebdd7c345/users';
+            var xhttp = new XMLHttpRequest();
+        
+            xhttp.open('GET', url, true);
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.setRequestHeader("X-Api-Key", "XWor3IxeV2M9g/mQ");
+            xhttp.send();
+           
+            xhttp.onload = function() {
+                if (xhttp.readyState === 4 && xhttp.status === 200) {
+                    let answer= xhttp.responseText;  
+                    answer  = JSON.parse(answer);  
+                    call(answer);
+
+        
                 }
+            }
+            let call = (u)=>{
+                this.fetchUsers(u);
+            }
+              
+        }
+
+
+        this.fetchUsers=(response)=>{
+            
+            this.users= [];
+            for (const user of response) {
                 
-                LOGS[endDate] = [startDate,startH,endDate,endH];
+                this.users.push({"name":user.name, "id":user.id, "workspace":user.activeWorkspace});
             }
-            
+           
+            for (let x = 0; x < this.users.length; x++){
+                this.getLogs(this.users[x].workspace, this.users[x].id);
+                if(x === this.users.length-1 ){
+                    //Activating the button INFO
+                    this.setState({butState: false});
+                    this.setState({usersData: this.users.map((item)=>{
+                        return (
+                            <li className="list-group-item" key={item.id}>{item.name}-{ item.id}-{ item.workspace}</li>
+                        )
+                    })})
+                    
+                    //Here I unlock the button
+                }
+                }
+      
         }
+
         
-        for (let i = 0; i < keysDate.length; i++) {
+        
+        this.showDatelogs=()=>{
             
-           text+= "<p>Start Date: "+LOGS[keysDate[i]][0]+" Time: from "+LOGS[keysDate[i]][1]+" to "+LOGS[keysDate[i]][3]+"</p>"
+         
+            for (let x = 0; x < this.logResponse.length; x++) {
+                let startDate;
+                let endDate;
+                let startH, endH;
+                let user;
+                let z = this.logResponse[x].length-1;
+                let reg = []
+                for (z; z >= 0; z--) {
+                    
+                    if (this.logResponse[x][z]["timeInterval"]["end"] == null) {
+                        //If is null, that is mean the user is working on it
+                        continue
+                    }
+                    for (let j = 0; j < this.users.length; j++) {
+                        if (this.users[j].id === this.logResponse[x][z]["userId"] ) {
+                            user = this.users[j].name;
+                            break;
+                        }
+                    }
+                    startH = this.logResponse[x][z]["timeInterval"]["start"].substring(11, 19);
+                    endH = this.logResponse[x][z]["timeInterval"]["end"].substring(11, 19);
+                    startDate = this.logResponse[x][z]["timeInterval"]["start"].substring(0, 10);
+                    endDate = this.logResponse[x][z]["timeInterval"]["end"].substring(0, 10);
+
+                   if (z === 0) {
+                       reg= [startDate,startH,endH,user];
+                        continue
+                   }
+                
+                    if (endDate === reg[0]) {
+                        reg[2] = endH
+                    }
+                    else{
+                        this.LOGS.push(reg);
+                        reg = [startDate,startH,endH,user]
+                    }
             
+       
+                }
+            }
+            this.setState({log: this.LOGS.map((date)=>{
+
+           
+                return (
+                <tr key={date} >
+                    <th scope="row" className="text-white bg-primary"> {date[0]}   </th>
+                    <th scope="row" className="text-white bg-primary"> {date[1]}   </th>
+                    <th scope="row" className="text-white bg-primary"> {date[2]}   </th>
+                    <th scope="row" className="text-white bg-primary"> {date[3]}   </th>
+                </tr>
+                    
+                )
+            })})
         }
-        document.getElementById('view2').innerHTML=text;
+      
+        
 
     }
 
-</script>
-</head>
-<body>
-    <button disabled id="info" >Info</button>
-    <button onclick="newRequest()">GET</button>
+  render() {
+  
+     
+    return (
+        <div>
+            <h2>Visualizacion de tiempo de tarea por usuario cada dia:</h2>
+            <button className="btn btn-info" disabled={this.state.butState} onClick={this.showDatelogs}  >Info</button>
+            <button className="btn btn-info" onClick={this.getUsers} >GET</button>
+            <ul className="list-group">{this.state.usersData}</ul>
+            <table className="table" border="1">
+                <thead className="thead-dark">
+                    <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Start</th>
+                    <th scope="col">End</th>
+                    <th scope="col">Worker</th>
+                    </tr>
+                </thead>
+                {this.state.log}
+            </table>
+    
+        </div>
+    );
+  }
+}
 
-    <div id="view"></div>
-    
-    <div id="view2">Ey</div>
-    
-    
-</body>
-</html>
+export default Info;
