@@ -1,12 +1,15 @@
 import React from 'react';
-import Car from './components/dataRequest.js'
-
+import RouteSS from './components/Routes.js'
+/* import background from "./components/tech.jpg"; */
 
 function App() {
+  
   return (
-    <div>
-     <Car />
+    <div >
+     <RouteSS/>
+
     </div>
+
   );
 }
 

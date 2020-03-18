@@ -1,17 +1,19 @@
 import React from 'react';
-
+import './Custom_styles/style_one.css'
 
 class Info extends React.Component {
     constructor(props) {
         super(props);
         this.logResponse = [];  
         this.users = []; 
-        this.LOGS = {};
+        this.LOGS = [];
         this.keysDate = [];
         this.state ={
             usersData : "",
             log :"",
-            butState : true
+            butStateVisible: 'hidden',
+            selectedUser :"",
+            butClass : "myBut"
         }
 
         //--------------- M E T H O D S ---------------------------
@@ -82,24 +84,32 @@ class Info extends React.Component {
                 this.getLogs(this.users[x].workspace, this.users[x].id);
                 if(x === this.users.length-1 ){
                     //Activating the button INFO
-                    this.setState({butState: false});
+                    this.setState({butStateVisible:'visible'});
                     this.setState({usersData: this.users.map((item)=>{
                         return (
-                            <li className="list-group-item" key={item.id}>{item.name}-{ item.id}-{ item.workspace}</li>
+                            <tr  key={item.id} onClick={() => this.selectUser(item.name)} >
+                                <th scope="row" className="th-User UserName">Name: {item.name}  </th>
+                                <th scope="row" className="th-User">id: {item.id}  </th>
+                                <th scope="row" className="th-User">Workspace id: {item.workspace}  </th>
+                            </tr>
                         )
                     })})
-                    
-                    //Here I unlock the button
                 }
-                }
+            }
       
         }
 
+        this.selectUser=(u)=>{
+            this.LOGS = [];
+            this.setState({butClass:'butWorks'});
+            this.setState({log:''});
+            this.setState({selectedUser:u});
+
+        }
         
-        
-        this.showDatelogs=()=>{
-            
-         
+        this.showDatelogs=(selected)=>{
+            this.LOGS = [];
+            console.log(this.logResponse);
             for (let x = 0; x < this.logResponse.length; x++) {
                 let startDate;
                 let endDate;
@@ -107,27 +117,36 @@ class Info extends React.Component {
                 let user;
                 let z = this.logResponse[x].length-1;
                 let reg = []
+                let i = z;
+                
                 for (z; z >= 0; z--) {
-                    
-                    if (this.logResponse[x][z]["timeInterval"]["end"] == null) {
-                        //If is null, that is mean the user is working on it
-                        continue
-                    }
                     for (let j = 0; j < this.users.length; j++) {
                         if (this.users[j].id === this.logResponse[x][z]["userId"] ) {
                             user = this.users[j].name;
                             break;
                         }
                     }
+                    if (this.logResponse[x][z]["timeInterval"]["end"] == null) {
+                        //If is null, that is mean the user is working on it
+                        let reg2=[];
+                        startH = this.logResponse[x][z]["timeInterval"]["start"].substring(11, 19);
+                        endH = "UNKNOWN";
+                        startDate = this.logResponse[x][z]["timeInterval"]["start"].substring(0, 10);
+                        endDate = "UNKNOWN";
+                        reg2 = [startDate,startH,endH,user];
+                        this.LOGS.push(reg);
+                        continue
+                    }
+                    
                     startH = this.logResponse[x][z]["timeInterval"]["start"].substring(11, 19);
                     endH = this.logResponse[x][z]["timeInterval"]["end"].substring(11, 19);
                     startDate = this.logResponse[x][z]["timeInterval"]["start"].substring(0, 10);
                     endDate = this.logResponse[x][z]["timeInterval"]["end"].substring(0, 10);
 
-                   if (z === 0) {
-                       reg= [startDate,startH,endH,user];
-                        continue
-                   }
+                    if (z === i) {
+                        reg= [startDate,startH,endH,user];
+                            continue
+                    }
                 
                     if (endDate === reg[0]) {
                         reg[2] = endH
@@ -142,16 +161,18 @@ class Info extends React.Component {
             }
             this.setState({log: this.LOGS.map((date)=>{
 
-           
-                return (
-                <tr key={date} >
-                    <th scope="row" className="text-white bg-primary"> {date[0]}   </th>
-                    <th scope="row" className="text-white bg-primary"> {date[1]}   </th>
-                    <th scope="row" className="text-white bg-primary"> {date[2]}   </th>
-                    <th scope="row" className="text-white bg-primary"> {date[3]}   </th>
-                </tr>
-                    
-                )
+                if (date[3] === selected) {
+                    return (
+                        <tr key={date} >
+                            <th scope="row" className="th-logs"> {date[0]}   </th>
+                            <th scope="row" className="th-logs"> {date[1]}   </th>
+                            <th scope="row" className="th-logs"> {date[2]}   </th>
+                            <th scope="row" className="th-logs"> {date[3]}   </th>
+                        </tr>
+                            
+                        )
+                }
+                
             })})
         }
       
@@ -163,22 +184,25 @@ class Info extends React.Component {
   
      
     return (
-        <div>
-            <h2>Visualizacion de tiempo de tarea por usuario cada dia:</h2>
-            <button className="btn btn-info" disabled={this.state.butState} onClick={this.showDatelogs}  >Info</button>
-            <button className="btn btn-info" onClick={this.getUsers} >GET</button>
-            <ul className="list-group">{this.state.usersData}</ul>
-            <table className="table" border="1">
-                <thead className="thead-dark">
+        <div >
+            <h2  className="titleh2 ">Full Report</h2>
+            <div className="infoWraper">
+                <button className=" myBut" onClick={this.getUsers} >Select User</button>
+                    <button className={this.state.butClass} style={{visibility: this.state.butStateVisible}}  onClick={()=>this.showDatelogs(this.state.selectedUser)}>Info</button>
+                <table className="Users-table w-50">{this.state.usersData}</table>
+                <table className=" w-50 table-Logs" border="1">
+                    
                     <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Start</th>
-                    <th scope="col">End</th>
-                    <th scope="col">Worker</th>
+                    <th className="titleLOGS" scope="col">Date</th>
+                    <th className="titleLOGS" scope="col">Start</th>
+                    <th className="titleLOGS" scope="col">End</th>
+                    <th className="titleLOGS" scope="col">Worker</th>
                     </tr>
-                </thead>
-                {this.state.log}
-            </table>
+                    {this.state.log}
+                </table>
+
+            </div>
+            
     
         </div>
     );
