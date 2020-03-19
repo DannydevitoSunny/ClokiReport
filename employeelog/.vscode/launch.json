@@ -9,7 +9,7 @@
             "request": "launch",
             "reAttach": true,
             "name": "Firefox React",
-            "url": "http://localhost:3000/requestData",
+            "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}"
         }
        
