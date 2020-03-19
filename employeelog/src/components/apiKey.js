@@ -6,30 +6,52 @@ import './Custom_styles/style_one.css'
 class ApiKey extends React.Component {
   constructor(props) {
     super(props);
-    this.state={
-      api_key: "NADA"
+    this.state = {
+      api_key: ""
     }
     this.handleClick = (event) => {
-      this.setState({api_key:event.target.value});
+      this.setState({ api_key: event.target.value });
 
-      
+
     }
   }
   render() {
     return (
-      <div className="Api-key" >
-        <div>
-          <h2 className="Title-start">
-            Introduce your AipKey here 
-          </h2>
-          <table className="Api-key-table"  >
-            <tr className="rowApi">
-              <td className="p-3">Change Api-KEY</td>
-              <td ><input type="text" onKeyUp={this.handleClick} placeholder="API_KEY"></input></td>
-              <td className="p-3" ><input type="button" className="butKey" onClick={() => this.props.update(this.state.api_key)} value="Submit"></input></td>
-            </tr>
-          </table>
-        </div>
+      <div  >
+        <section className="content-header">
+          <div className="container-fluid">
+            <div className="row mb-2">
+              <div className="col-sm-6">
+                <h1>Welcome to ClokiFy</h1>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="content">
+
+
+          <div className="card">
+            <div className="card-header">
+              <h3 className="card-title">Introduce your Api-Key below here: </h3>
+
+              <div className="card-tools">
+                <button type="button" className="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                  <i className="fas fa-minus"></i></button>
+                 
+              </div>
+            </div>
+            <div className="card-body">
+              <input type="text" onKeyUp={this.handleClick} placeholder="API_KEY"></input>
+            </div>
+            <div className="card-footer">
+              <input type="button" className="" onClick={() => this.props.update(this.state.api_key)} value="Submit"></input>
+            </div>
+
+          </div>
+
+
+        </section>
       </div>
 
     )
@@ -38,3 +60,4 @@ class ApiKey extends React.Component {
 
 }
 export default ApiKey;
+

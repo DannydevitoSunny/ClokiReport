@@ -14,10 +14,11 @@ class Info extends React.Component {
             log: "",
             butStateVisible: 'hidden',
             selectedUser: "",
-            butClass: "myBut",
-            newKey : "XWor3IxeV2M9g/mQ"
-           
-         
+            butclassName: "myBut",
+            newKey: "XWor3IxeV2M9g/mQ",
+            goodKey: ""
+
+
         }
 
 
@@ -47,6 +48,7 @@ class Info extends React.Component {
         }
 
         this.getUsers = (newKey) => {
+            console.log(newKey);
             //New request clear the old data (refresh)
             this.logResponse = [];
             this.users = [];
@@ -62,15 +64,29 @@ class Info extends React.Component {
 
             xhttp.onload = function () {
                 if (xhttp.readyState === 4 && xhttp.status === 200) {
+
                     let answer = xhttp.responseText;
+                    console.clear();
+                    console.log(answer);
                     answer = JSON.parse(answer);
                     call(answer);
 
 
                 }
+                else {
+                    call("badkey")
+
+                }
             }
             let call = (u) => {
-                this.fetchUsers(u);
+                if (u === "badkey") {
+                    this.setState({ goodKey: "The key is wrong, try again!" })
+                }
+                else {
+                    this.setState({ goodKey: "" })
+                    this.fetchUsers(u);
+                }
+
             }
 
         }
@@ -107,7 +123,7 @@ class Info extends React.Component {
 
         this.selectUser = (u) => {
             this.LOGS = [];
-            this.setState({ butClass: 'butWorks' });
+            this.setState({ butclassName: 'butWorks' });
             this.setState({ log: '' });
             this.setState({ selectedUser: u });
 
@@ -140,7 +156,7 @@ class Info extends React.Component {
                         startDate = this.logResponse[x][z]["timeInterval"]["start"].substring(0, 10);
                         endDate = "UNKNOWN";
                         reg2 = [startDate, startH, endH, user];
-                        this.LOGS.push(reg);
+                        this.LOGS.push(reg2);
                         continue
                     }
 
@@ -193,62 +209,78 @@ class Info extends React.Component {
 
         return (
             <div >
+                <button className=" myBut" onClick={() => this.getUsers(this.key)} >Get Report</button>
+                <button className={this.state.butclassName} style={{ visibility: this.state.butStateVisible }} onClick={() => this.showDatelogs(this.state.selectedUser)}>Info</button>
+                <h2 className="text-success">Nueva key : {(this.props.param1 !== "") ? this.key = this.props.param1 : this.key = "XWor3IxeV2M9g/mQ"}</h2>
+                <p className="text-danger">{this.state.goodKey}</p>
 
-                <div className="infoWraper">
-                    <div class="wrap-table100 table-Logs">
-        <h2>Nueva key : {(this.props.param1 !="")?this.ZZ = this.props.param1 :  this.ZZ ="XWor3IxeV2M9g/mQ"}</h2>
-                    <button className=" myBut" onClick={()=>this.getUsers(this.ZZ)} >Get Report</button>
-                    <button className={this.state.butClass} style={{ visibility: this.state.butStateVisible }} onClick={() => this.showDatelogs(this.state.selectedUser)}>Info</button>
-                        <table className="Users-table">
-                            <tr>
-                                <th>Name</th>
-                                <th>ID</th>
-                                <th>Workspace ID</th>
-                            </tr>
-                            {this.state.usersData}
-                        </table>
-                        <div class="table100 ver3 m-b-110">
+            {/*@@@@@@@@@@@@@@@@@@@@@@@@@@T A B L E   U S E R S  */}
+                <div className="row">
+                    <div className="col-12">
+                        <div className="card">
+                            <div className="card-header">
+                                <h3 className="card-title">Table Users</h3>
 
-                            <div class="table100-head">
-                                <table>
+                               
+                            </div>
+
+                            <div className="card-body table-responsive p-0">
+                                <table className="table table-hover text-nowrap">
                                     <thead>
-                                        <tr class="row100 head">
-                                            <th className="cell100 column1" >Date</th>
-                                            <th className="cell100 column2" >Start</th>
-                                            <th className="cell100 column3" >End</th>
-                                            <th className="cell100 column4" >Worker</th>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Id</th>
+                                            <th>Workspace Id</th>
                                         </tr>
                                     </thead>
+                                    <tbody>
+                                        {this.state.usersData}
+                                    </tbody>
                                 </table>
                             </div>
 
-                            <div class="table100-body js-pscroll">
+                        </div>
 
-                                <table>
+                    </div>
+                </div>
+        {/* @@@@@@@@@@@@@@@@@@@@@@@@@@ T A B L E   L O G S  */}
+                <div className="row">
+                    <div className="col-12">
+                        <div className="card">
+                            <div className="card-header">
+                                <h3 className="card-title">Table Logs</h3>
+
+                               
+                            </div>
+
+                            <div className="card-body table-responsive p-0" >
+                                <table className="table table-head-fixed text-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>Start Date</th>
+                                            <th>Start Hour</th>
+                                            <th>End Hour</th>
+                                            <th>Worker</th>
+                                        </tr>
+                                    </thead>
                                     <tbody>
                                         {this.state.log}
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
+
                     </div>
-
-
-
-
-
-
-
-
-
-
                 </div>
 
-
             </div>
+
         );
     }
 }
 
 export default Info;
+
+
+
+
