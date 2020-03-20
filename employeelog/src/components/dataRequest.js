@@ -12,9 +12,7 @@ class Info extends React.Component {
         this.state = {
             usersData: "",
             log: "",
-            butStateVisible: 'hidden',
             selectedUser: "",
-            butclassName: "myBut",
             newKey: "XWor3IxeV2M9g/mQ",
             goodKey: ""
 
@@ -36,7 +34,7 @@ class Info extends React.Component {
                 if (this.readyState === 4 && this.status === 200) {
                     let answer = this.responseText;
                     answer = JSON.parse(answer);
-                    console.log(answer);
+
                     add(answer);
                 }
             }
@@ -48,7 +46,6 @@ class Info extends React.Component {
         }
 
         this.getUsers = (newKey) => {
-            console.log(newKey);
             //New request clear the old data (refresh)
             this.logResponse = [];
             this.users = [];
@@ -67,7 +64,6 @@ class Info extends React.Component {
 
                     let answer = xhttp.responseText;
                     console.clear();
-                    console.log(answer);
                     answer = JSON.parse(answer);
                     call(answer);
 
@@ -95,23 +91,27 @@ class Info extends React.Component {
         this.fetchUsers = (response) => {
 
             this.users = [];
+            console.clear();
             for (const user of response) {
-
-                this.users.push({ "name": user.name, "id": user.id, "workspace": user.activeWorkspace });
+                if (user.memberships[0].membershipStatus === "ACTIVE") {
+                    this.users.push({ "name": user.name, "id": user.id, "workspace": user.activeWorkspace });
+                }
+                
             }
 
             for (let x = 0; x < this.users.length; x++) {
                 this.getLogs(this.users[x].workspace, this.users[x].id);
                 if (x === this.users.length - 1) {
                     //Activating the button INFO
-                    this.setState({ butStateVisible: 'visible' });
                     this.setState({
                         usersData: this.users.map((item) => {
                             return (
-                                <tr key={item.id} onClick={() => this.selectUser(item.name)} >
+                                <tr key={item.id}  >
+                                    
                                     <td className="">{item.name}  </td>
                                     <td className="">{item.id}  </td>
                                     <td className="">{item.workspace}  </td>
+                                    <td><button className="myBut" onClick={() => this.showDatelogs(item.name)}>Info</button></td>
                                 </tr>
                             )
                         })
@@ -121,17 +121,10 @@ class Info extends React.Component {
 
         }
 
-        this.selectUser = (u) => {
-            this.LOGS = [];
-            this.setState({ butclassName: 'butWorks' });
-            this.setState({ log: '' });
-            this.setState({ selectedUser: u });
-
-        }
 
         this.showDatelogs = (selected) => {
             this.LOGS = [];
-            ;
+            this.setState({ log: '' });
             for (let x = 0; x < this.logResponse.length; x++) {
                 let startDate;
                 let endDate;
@@ -200,6 +193,14 @@ class Info extends React.Component {
             })
         }
 
+        this.printData=()=>{
+        
+           let  newWin= window.open("");
+            newWin.document.write(this.div.innerHTML);
+            newWin.print();
+            newWin.close();
+        }
+
 
 
     }
@@ -219,7 +220,6 @@ class Info extends React.Component {
                             <div className="card-header">
 
                                 <button className=" myBut" onClick={() => this.getUsers(this.key)} >Get Report</button>
-                                <button className={this.state.butclassName} style={{ visibility: this.state.butStateVisible }} onClick={() => this.showDatelogs(this.state.selectedUser)}>Info</button>
                                 <h3 className="">New key : <span className="border-bottom p-2 text-primary border-primary">{(this.props.param1 !== "") ? this.key = this.props.param1 : this.key = "XWor3IxeV2M9g/mQ"}</span></h3>
                                 <p className="text-danger">{this.state.goodKey}</p>
                                 <h3 className="card-title">Table Users</h3>
@@ -254,14 +254,15 @@ class Info extends React.Component {
 
                             </div>
 
-                            <div className="card-body table-responsive p-0" >
-                                <table className="table table-head-fixed text-nowrap">
+                            <div className="card-body table-responsive p-0" ref={div=>{this.div=div}} id="printTable">
+                                <table className="table table-head-fixed text-nowrap" >
                                     <thead>
                                         <tr>
                                             <th>Start Date</th>
                                             <th>Start Hour</th>
                                             <th>End Hour</th>
                                             <th>Worker</th>
+                                            <th><button onClick={this.printData}>Print</button></th>
                                         </tr>
                                     </thead>
                                     <tbody>
