@@ -209,19 +209,20 @@ class Info extends React.Component {
 
         return (
             <div >
-                <button className=" myBut" onClick={() => this.getUsers(this.key)} >Get Report</button>
-                <button className={this.state.butclassName} style={{ visibility: this.state.butStateVisible }} onClick={() => this.showDatelogs(this.state.selectedUser)}>Info</button>
-                <h2 className="text-success">Nueva key : {(this.props.param1 !== "") ? this.key = this.props.param1 : this.key = "XWor3IxeV2M9g/mQ"}</h2>
-                <p className="text-danger">{this.state.goodKey}</p>
 
-            {/*@@@@@@@@@@@@@@@@@@@@@@@@@@T A B L E   U S E R S  */}
+
+
+                {/*@@@@@@@@@@@@@@@@@@@@@@@@@@T A B L E   U S E R S  */}
                 <div className="row">
                     <div className="col-12">
                         <div className="card">
                             <div className="card-header">
-                                <h3 className="card-title">Table Users</h3>
 
-                               
+                                <button className=" myBut" onClick={() => this.getUsers(this.key)} >Get Report</button>
+                                <button className={this.state.butclassName} style={{ visibility: this.state.butStateVisible }} onClick={() => this.showDatelogs(this.state.selectedUser)}>Info</button>
+                                <h3 className="">New key : <span className="border-bottom p-2 text-primary border-primary">{(this.props.param1 !== "") ? this.key = this.props.param1 : this.key = "XWor3IxeV2M9g/mQ"}</span></h3>
+                                <p className="text-danger">{this.state.goodKey}</p>
+                                <h3 className="card-title">Table Users</h3>
                             </div>
 
                             <div className="card-body table-responsive p-0">
@@ -243,14 +244,14 @@ class Info extends React.Component {
 
                     </div>
                 </div>
-        {/* @@@@@@@@@@@@@@@@@@@@@@@@@@ T A B L E   L O G S  */}
+                {/* @@@@@@@@@@@@@@@@@@@@@@@@@@ T A B L E   L O G S  */}
                 <div className="row">
                     <div className="col-12">
                         <div className="card">
                             <div className="card-header">
                                 <h3 className="card-title">Table Logs</h3>
 
-                               
+
                             </div>
 
                             <div className="card-body table-responsive p-0" >

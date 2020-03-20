@@ -66,15 +66,10 @@
 }
 
 .myBut{
-  position: relative;
-  top: 1%;
-  left: 8%;
-  transform: translate(-40%,0%);
+
   color: white;
   border-radius: 5px;
   padding: 10px;
-  margin-bottom:  1%;
-  margin-left: 2px;
   background-color: rgb(67, 68, 67);
 }
 .myBut:hover{
@@ -82,16 +77,9 @@
 }
 
 .butWorks{
-  
-  position: relative;
-  top: 1%;
-  left: 40%;
-  transform: translate(-40%,0%);
   color: rgb(64, 175, 101);
   border-radius: 5px;
   padding: 10px;
-  margin-bottom:  1%;
-  margin-left: 2px;
   background-color: rgb(67, 68, 67);
 }
 .butWorks{

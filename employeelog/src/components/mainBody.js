@@ -19,7 +19,7 @@ class Visualize extends React.Component {
     render() {
 
         return (
-            <div >
+            <div style={{marginLeft:"5%", width:"90%"}} >
                 <div className="">
                     <ApiKey update={this.getkey} />
                 </div>
