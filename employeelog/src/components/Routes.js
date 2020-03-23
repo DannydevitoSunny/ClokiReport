@@ -2,7 +2,7 @@ import React from "react";
 import { Route, Switch, Link, BrowserRouter as Router, } from "react-router-dom";
 import Visualize from './mainBody.js'
 import Info from './dataRequest.js'
-
+import Login from './login.js'
 
 
 class RouteSS extends React.Component {
@@ -15,7 +15,7 @@ class RouteSS extends React.Component {
 
     render() {
         return (
-            <body ref={mybody => {this.body =mybody}}  className="hold-transition sidebar-mini">
+            <body ref={mybody => {this.body =mybody}}  className="hold-transition sidebar-mini" style={{fontFamily:"'Arial', sans-serif"}}>
     <noscript>You need to enable JavaScript to run this app.</noscript>
 
 
@@ -31,7 +31,7 @@ class RouteSS extends React.Component {
                         <Link to="/"><a href="./AdminLTE-3.0.2/index3.html" className="nav-link">Home</a> </Link>
                     </li>
                     <li className="nav-item d-none d-sm-inline-block">
-                        <Link to="requestData"><a href="#" className="nav-link">Info</a></Link>
+                        <Link to="/report"><a href="#" className="nav-link">Info</a></Link>
                     </li>
 
                 </ul>
@@ -53,7 +53,7 @@ class RouteSS extends React.Component {
                         <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                             
                         <li className="nav-item">
-                                <p href="" className="nav-link ml-2 btn-outline-secondary text-white font-weight-light  h3 "  onClick={this.fun}>
+                                <p href="" style={{cursor:"pointer"}} className="nav-link ml-2 btn-outline-secondary text-white font-weight-light  h3 " onClick={this.fun}>
                                       Close Menu
                                 </p>
                             </li>
@@ -85,7 +85,7 @@ class RouteSS extends React.Component {
                     </nav>
                 </div>
             </aside>
-            <div className="content-wrapper">
+            <div className="content-wrapper" style={{overflowY: "scroll", height:window.innerHeight-120}}>
 
                 <section className="content">
                     <div className="container-fluid">
@@ -94,8 +94,8 @@ class RouteSS extends React.Component {
 
                             <Switch>
 
-                                <Route path="/requestData" exact component={Visualize}></Route>
-                                <Route path="/prueba" exact component={Info}></Route>
+                                <Route path="/report" exact component={Visualize}></Route>
+                              
                             </Switch>
 
 

@@ -40,6 +40,7 @@ class Info extends React.Component {
             }
             let add = (answer) => {
                 this.logResponse.push(answer);
+                
 
             }
 
@@ -63,7 +64,6 @@ class Info extends React.Component {
                 if (xhttp.readyState === 4 && xhttp.status === 200) {
 
                     let answer = xhttp.responseText;
-                    console.clear();
                     answer = JSON.parse(answer);
                     call(answer);
 
@@ -91,7 +91,6 @@ class Info extends React.Component {
         this.fetchUsers = (response) => {
 
             this.users = [];
-            console.clear();
             for (const user of response) {
                 if (user.memberships[0].membershipStatus === "ACTIVE") {
                     this.users.push({ "name": user.name, "id": user.id, "workspace": user.activeWorkspace });
@@ -100,9 +99,10 @@ class Info extends React.Component {
             }
 
             for (let x = 0; x < this.users.length; x++) {
+                //Making requests for each user 
                 this.getLogs(this.users[x].workspace, this.users[x].id);
-                if (x === this.users.length - 1) {
-                    //Activating the button INFO
+                
+                    //SHOW USERS
                     this.setState({
                         usersData: this.users.map((item) => {
                             return (
@@ -111,12 +111,12 @@ class Info extends React.Component {
                                     <td className="">{item.name}  </td>
                                     <td className="">{item.id}  </td>
                                     <td className="">{item.workspace}  </td>
-                                    <td><button className="myBut" onClick={() => this.showDatelogs(item.name)}>Info</button></td>
+                                    <td><button className="btn bg-dark text-success" onClick={() => this.showDatelogs(item.name)}>Info</button></td>
                                 </tr>
                             )
                         })
                     })
-                }
+                
             }
 
         }
@@ -213,13 +213,13 @@ class Info extends React.Component {
 
 
 
-                {/*@@@@@@@@@@@@@@@@@@@@@@@@@@T A B L E   U S E R S  */}
+                {/*@@@@@@@@@@@@@@@@@@@@@@@@@@ T A B L E   U S E R S  */}
                 <div className="row">
                     <div className="col-12">
                         <div className="card">
                             <div className="card-header">
 
-                                <button className=" myBut" onClick={() => this.getUsers(this.key)} >Get Report</button>
+                                <button className="btn bg-primary" onClick={() => this.getUsers(this.key)} >Get Report</button>
                                 <h3 className="">New key : <span className="border-bottom p-2 text-primary border-primary">{(this.props.param1 !== "") ? this.key = this.props.param1 : this.key = "XWor3IxeV2M9g/mQ"}</span></h3>
                                 <p className="text-danger">{this.state.goodKey}</p>
                                 <h3 className="card-title">Table Users</h3>
@@ -262,7 +262,7 @@ class Info extends React.Component {
                                             <th>Start Hour</th>
                                             <th>End Hour</th>
                                             <th>Worker</th>
-                                            <th><button onClick={this.printData}>Print</button></th>
+                                            <th><button className="btn bg-primary" onClick={this.printData}>Print table</button></th>
                                         </tr>
                                     </thead>
                                     <tbody>

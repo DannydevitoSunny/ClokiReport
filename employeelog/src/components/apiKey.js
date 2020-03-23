@@ -45,7 +45,7 @@ class ApiKey extends React.Component {
               <input type="text" onKeyUp={this.handleClick} placeholder="API_KEY"></input>
             </div>
             <div className="card-footer">
-              <input type="button" className="" onClick={() => this.props.update(this.state.api_key)} value="Submit"></input>
+              <input type="button" className="btn bg-primary" onClick={() => this.props.update(this.state.api_key)} value="Submit"></input>
             </div>
 
           </div>
