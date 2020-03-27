@@ -71,7 +71,7 @@ class Login extends React.Component {
                                     Don’t have an account?
                                 </span>
         
-                                <Link to="/reg"><a href="" className="txt3 bo1 hov1">Sign up now</a></Link>
+                                <Link to="/reg"><a href="" className="txt3 bo1 hov1"> Sign up now</a></Link>
                             </div>
     
                             

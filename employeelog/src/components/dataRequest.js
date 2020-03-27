@@ -1,20 +1,36 @@
 import React from 'react';
 import './Custom_styles/style_one.css'
+import { Bar } from 'react-chartjs-2';
 
 class Info extends React.Component {
     constructor(props) {
         super(props);
-
+        this.days = [];
+        this.HoursperDay=[];
         this.logResponse = [];
         this.users = [];
-        this.LOGS = [];
         this.keysDate = [];
         this.state = {
             usersData: "",
             log: "",
             selectedUser: "",
             newKey: "XWor3IxeV2M9g/mQ",
-            goodKey: ""
+            goodKey: "",
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                datasets: [
+                    {
+                        label: 'My First dataset',
+                        backgroundColor: 'rgba(255,99,132,0.2)',
+                        borderColor: 'rgba(255,99,132,1)',
+                        borderWidth: 1,
+                        hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+                        hoverBorderColor: 'rgba(255,99,132,1)',
+                        data: [0, 0, 0, 0, 0, 0, 0,]
+                    }
+                ]
+            }
+
 
 
         }
@@ -24,7 +40,7 @@ class Info extends React.Component {
 
         this.getLogs = (usersworkspace, usersid) => {
             var xhttp = new XMLHttpRequest();
-            let url = 'https://api.clockify.me/api/v1/workspaces/' + usersworkspace + '/user/' + usersid + '/time-entries';
+            let url = 'https://api.clockify.me/api/v1/workspaces/' + usersworkspace + '/user/' + usersid + '/time-entries?page-size=2500';
             xhttp.open('GET', url, true);
             xhttp.setRequestHeader("Content-type", "application/json");
 
@@ -40,13 +56,14 @@ class Info extends React.Component {
             }
             let add = (answer) => {
                 this.logResponse.push(answer);
-                
+
 
             }
 
         }
 
         this.getUsers = (newKey) => {
+
             //New request clear the old data (refresh)
             this.logResponse = [];
             this.users = [];
@@ -95,117 +112,221 @@ class Info extends React.Component {
                 if (user.memberships[0].membershipStatus === "ACTIVE") {
                     this.users.push({ "name": user.name, "id": user.id, "workspace": user.activeWorkspace });
                 }
-                
+
             }
 
             for (let x = 0; x < this.users.length; x++) {
                 //Making requests for each user 
                 this.getLogs(this.users[x].workspace, this.users[x].id);
-                
-                    //SHOW USERS
-                    this.setState({
-                        usersData: this.users.map((item) => {
-                            return (
-                                <tr key={item.id}  >
-                                    
-                                    <td className="">{item.name}  </td>
-                                    <td className="">{item.id}  </td>
-                                    <td className="">{item.workspace}  </td>
-                                    <td><button className="btn bg-dark text-success" onClick={() => this.showDatelogs(item.name)}>Info</button></td>
-                                </tr>
-                            )
-                        })
+
+                //SHOW USERS
+                this.setState({
+                    usersData: this.users.map((item) => {
+                        return (
+                            <tr key={item.id}  >
+
+                                <td className="">{item.name}  </td>
+                                <td className="">{item.id}  </td>
+                                <td className="">{item.workspace}  </td>
+                                <td><button className="btn text-white bg-secondary" onClick={() => this.generateLogs(item.id, "2020-03")}>Info</button></td>
+                            </tr>
+                        )
                     })
-                
+                })
+
             }
+
+        }
+        this.generateLogs = (selected, searchDate) => {
+            console.clear();
+            
+            this.setState({ selectedUser: selected });
+            this.LOGS = [];
+            this.keyDates = [];
+            let auxDate = "";
+            for (let x = 0; x < this.logResponse.length; x++) {
+                this.LOGS[0] = [];
+                let newStartDate = "/"
+                let startDate = "";
+                let startH, endH;
+                let user;
+                let duration = "";
+                let hour = 0, min = 0, sec = 0;
+                let TaskDate = "";
+                for (let j = 0; j < this.users.length; j++) {
+                    if (this.users[j].id === this.logResponse[x][0]["userId"]) {
+                        user = this.users[j].name;
+                        break;
+                    }
+                }
+
+                if (this.logResponse[x][0]["userId"] === selected) {
+                    this.HoursperDay=[]
+                    for (let z = this.logResponse[x].length - 1; z >= 0; z--) {// ----> LOOP  OF  T A S K S
+                        let auxh = 0,auxm =0, auxs = 0;
+
+                        //----------------APPLIYING DATE FILTER
+                        if (this.logResponse[x][z]["timeInterval"]["start"].substring(0, 10).includes(searchDate)) {
+                            
+                            let reg = []
+                            startDate = this.logResponse[x][z]["timeInterval"]["start"].substring(0, 10);
+                            startH = this.logResponse[x][z]["timeInterval"]["start"].substring(11, 19);
+                            //If is null, that is mean the user is working on it
+                            if (this.logResponse[x][z]["timeInterval"]["end"] == null) {
+                                endH = "UNKNOWN"
+                                duration = "UNKNOWN"
+                            }
+                            else {
+                                endH = this.logResponse[x][z]["timeInterval"]["end"].substring(11, 19);
+                                duration = this.logResponse[x][z]["timeInterval"]["duration"];
+                                if(TaskDate!==startDate){
+                                    TaskDate = startDate
+                                    this.HoursperDay.push(hour+"."+min)//First DURATION is trash, I remove it in Chart()
+                                    hour = 0;
+                                    min = 0;
+                                    sec = 0;
+                                }
+                                let aux_char = "";
+                                for (let s = 0; s < duration.length; s++) {
+                                    let character = duration.charAt(s);
+                                    character = character.toLowerCase();
+
+                                    if (character === "p" || character === "t") {
+                                        continue;
+                                    }
+                                    if (character === "h") {
+                                        auxh += aux_char                       
+                                        aux_char = ""
+                                        continue;
+                                    }
+                                    if (character === "m") {
+                                        auxm = aux_char;
+                                        aux_char = ""
+                                        continue;
+                                    }
+                                    if (character === "s") {
+                                        auxs = aux_char;
+                                        aux_char = ""
+                                        continue;
+                                    }
+                                    aux_char += character;
+
+                                }
+                                //Missing the condition that asure if the duration is from the same date, then, add it!!
+                                //Solution: create another aux2 and add the new task duration to it
+                                
+                                hour+=parseInt(auxh);
+                                min+=parseInt(auxm);
+                                sec+=parseInt(auxs);
+                                let d = new Date();
+                                d.setHours(hour);
+                                d.setMinutes(min);
+                                d.setSeconds(sec)
+                                duration= d.toString()
+                                duration = duration.slice(15,24);
+                                
+                                console.log(this.HoursperDay)
+                                
+                            }
+                            /* @@@@@@@@@@@@@@@@-- ADDING REGISTER WITH GOOD DATA --@@@@@@@@@@@@@ */
+
+                            reg = [startDate, startH, endH, duration, user];
+                            if (startDate !== newStartDate) {
+                                newStartDate = startDate; //New date as index
+                                this.LOGS[0][newStartDate] = []; //CREATING NEW START DATE ARRAY
+                                this.LOGS[0][newStartDate].push(reg);
+                            }
+                            else {
+                                this.LOGS[0][newStartDate].push(reg);
+                            }
+                            if (auxDate !== newStartDate) {
+                                auxDate = newStartDate;
+                                this.keyDates.push(auxDate);
+                            }
+
+                        }
+
+
+                    }
+                    console.log(this.HoursperDay)
+                    break;
+                    
+                }
+            }
+ 
+            this.chartInfo();
+            this.showLogs(this.keyDates);
+
 
         }
 
 
-        this.showDatelogs = (selected) => {
-            this.LOGS = [];
-            this.setState({ log: '' });
-            for (let x = 0; x < this.logResponse.length; x++) {
-                let startDate;
-                let endDate;
-                let startH, endH;
-                let user;
-                let z = this.logResponse[x].length - 1;
-                let reg = []
-                let i = z;
-
-                for (z; z >= 0; z--) {
-                    for (let j = 0; j < this.users.length; j++) {
-                        if (this.users[j].id === this.logResponse[x][z]["userId"]) {
-                            user = this.users[j].name;
-                            break;
-                        }
-                    }
-                    if (this.logResponse[x][z]["timeInterval"]["end"] == null) {
-                        //If is null, that is mean the user is working on it
-                        let reg2 = [];
-                        startH = this.logResponse[x][z]["timeInterval"]["start"].substring(11, 19);
-                        endH = "UNKNOWN";
-                        startDate = this.logResponse[x][z]["timeInterval"]["start"].substring(0, 10);
-                        endDate = "UNKNOWN";
-                        reg2 = [startDate, startH, endH, user];
-                        this.LOGS.push(reg2);
-                        continue
-                    }
-
-                    startH = this.logResponse[x][z]["timeInterval"]["start"].substring(11, 19);
-                    endH = this.logResponse[x][z]["timeInterval"]["end"].substring(11, 19);
-                    startDate = this.logResponse[x][z]["timeInterval"]["start"].substring(0, 10);
-                    endDate = this.logResponse[x][z]["timeInterval"]["end"].substring(0, 10);
-
-                    if (z === i) {
-                        reg = [startDate, startH, endH, user];
-                        continue
-                    }
-
-                    if (endDate === reg[0]) {
-                        reg[2] = endH
-                    }
-                    else {
-                        this.LOGS.push(reg);
-                        reg = [startDate, startH, endH, user]
-                    }
-
-
-                }
-            }
+        this.showLogs = () => {
             this.setState({
-                log: this.LOGS.map((date) => {
-
-                    if (date[3] === selected) {
-                        return (
-                            <tr className="row100 body" key={date} >
-                                <td className="cell100 column1"> {date[0]}   </td>
-                                <td className="cell100 column2"> {date[1]}   </td>
-                                <td className="cell100 column3"> {date[2]}   </td>
-                                <td className="cell100 column4"> {date[3]}   </td>
-                            </tr>
-
-                        )
-                    }
-
+                log: this.keyDates.map((date) => {
+                    let last = this.LOGS[0][date].length - 1;
+                    return (
+                        <tr className="row100 body" key={date} >
+                            <td className="cell100 column1">{this.LOGS[0][date][0][0]}</td>
+                            <td className="cell100 column2">{this.LOGS[0][date][0][1]}</td>
+                            <td className="cell100 column3">{this.LOGS[0][date][last][2]}</td>
+                            <td className="cell100 column4">{this.LOGS[0][date][0][3]}</td>
+                            <td className="cell100 column4">{this.LOGS[0][date][0][4]}</td>
+                        </tr>
+                    )
                 })
             })
         }
 
-        this.printData=()=>{
-        
-           let  newWin= window.open("");
+        this.printData = () => {
+
+            let newWin = window.open("");
             newWin.document.write(this.div.innerHTML);
             newWin.print();
             newWin.close();
         }
 
+        this.chartInfo = (y,m) => {
+            this.HoursperDay.shift()
+            let days_length = new Date(y, m, 0).getDate();
+            this.days = [];
+            for (let day = 1; day <= days_length; day++) {
+                this.days.push(day);
+
+            }
+
+
+            this.setState({
+                data: {
+                    labels: this.days,
+                    datasets: [
+                        {
+                            label: 'My First dataset',
+                            backgroundColor: 'rgba(255,99,132,0.2)',
+                            borderColor: 'rgba(255,99,132,1)',
+                            borderWidth: 1,
+                            hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+                            hoverBorderColor: 'rgba(255,99,132,1)',
+                            data:this.HoursperDay
+                        }
+                    ]
+                }
+            });
+
+        }
+
+        this.filterDate = () => {
+            let FDate = this.year.value+"-"+this.select.value;
+            this.generateLogs(this.state.selectedUser, FDate)
+            this.chartInfo(this.year.value,this.select.value)
+
+        }
 
 
     }
 
     render() {
+
 
 
         return (
@@ -244,44 +365,90 @@ class Info extends React.Component {
 
                     </div>
                 </div>
+
+                {/*    @@@@@@@@@@@@@@@@@@@ P A G E S @@@@@@@@@@@@@@@@@@@@@@@@@ */}
+
+
                 {/* @@@@@@@@@@@@@@@@@@@@@@@@@@ T A B L E   L O G S  */}
                 <div className="row">
                     <div className="col-12">
                         <div className="card">
                             <div className="card-header">
-                                <h3 className="card-title">Table Logs</h3>
+                                <h3 className="card-title">Select Date: </h3>
+                                <p>
+                                    <select className="ml-4" ref={select =>{this.select=select}}>
+                                        <option>- Month -</option>
+                                        <option value="01">January</option>
+                                        <option value="02">Febuary</option>
+                                        <option value="03">March</option>
+                                        <option value="04">April</option>
+                                        <option value="05">May</option>
+                                        <option value="06">June</option>
+                                        <option value="07">July</option>
+                                        <option value="08">August</option>
+                                        <option value="09">September</option>
+                                        <option value="10">October</option>
+                                        <option value="11">November</option>
+                                        <option value="12">December</option>
+                                    </select>
+                                    <input type="text" maxLength="4" placeholder="Year" ref={year => {this.year=year}}></input>
+                                    <button className="btn text-white bg-secondary" onClick={this.filterDate}>Search</button>
+                                </p>
 
 
-                            </div>
-
-                            <div className="card-body table-responsive p-0" ref={div=>{this.div=div}} id="printTable">
-                                <table className="table table-head-fixed text-nowrap" >
-                                    <thead>
-                                        <tr>
-                                            <th>Start Date</th>
-                                            <th>Start Hour</th>
-                                            <th>End Hour</th>
-                                            <th>Worker</th>
-                                            <th><button className="btn bg-primary" onClick={this.printData}>Print table</button></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {this.state.log}
-                                    </tbody>
-                                </table>
-                            </div>
                         </div>
 
+                        <div className="card-body table-responsive p-0" ref={div => { this.div = div }} id="printTable">
+                            <table className="table table-head-fixed text-nowrap" >
+                                <thead>
+                                    <tr>
+                                        <th>Start Date</th>
+                                        <th>Start Hour</th>
+                                        <th>End Hour</th>
+                                        <th>Duration</th>
+                                        <th>Worker</th>
+                                        <th><button className="btn bg-primary" onClick={this.printData}>Print table</button></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.state.log}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
 
+                </div>
             </div>
+
+                 {/* @@@@@@@@@@@@@@@@@@@ G E N E R A T E   C H A R T @@@@@@@  */ }
+        <div className="card card-primary">
+            <div className="card-header">
+                <h3 className="card-title">March</h3>
+
+                <div className="card-tools">
+                    <button type="button" className="btn btn-tool" data-card-widget="collapse"><i className="fas fa-minus"></i>
+                    </button>
+                    <button type="button" className="btn btn-tool" data-card-widget="remove"><i className="fas fa-times"></i></button>
+                </div>
+            </div>
+            <div className="card-body">
+                <div className="chart">
+                    <Bar data={this.state.data} />
+                </div>
+            </div>
+
+        </div>
+                
+                
+            </div >
 
         );
     }
 }
 
 export default Info;
+
+
 
 
 
