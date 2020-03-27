@@ -151,7 +151,6 @@ class Info extends React.Component {
                 let startH, endH;
                 let user;
                 let duration = "";
-                let hour = 0, min = 0, sec = 0;
                 let TaskDate = "";
                 for (let j = 0; j < this.users.length; j++) {
                     if (this.users[j].id === this.logResponse[x][0]["userId"]) {
@@ -163,7 +162,7 @@ class Info extends React.Component {
                 if (this.logResponse[x][0]["userId"] === selected) {
                     this.HoursperDay=[]
                     for (let z = this.logResponse[x].length - 1; z >= 0; z--) {// ----> LOOP  OF  T A S K S
-                        let auxh = 0,auxm =0, auxs = 0;
+                        
 
                         //----------------APPLIYING DATE FILTER
                         if (this.logResponse[x][z]["timeInterval"]["start"].substring(0, 10).includes(searchDate)) {
@@ -179,53 +178,6 @@ class Info extends React.Component {
                             else {
                                 endH = this.logResponse[x][z]["timeInterval"]["end"].substring(11, 19);
                                 duration = this.logResponse[x][z]["timeInterval"]["duration"];
-                                if(TaskDate!==startDate){
-                                    TaskDate = startDate
-                                    this.HoursperDay.push(hour+"."+min)//First DURATION is trash, I remove it in Chart()
-                                    hour = 0;
-                                    min = 0;
-                                    sec = 0;
-                                }
-                                let aux_char = "";
-                                for (let s = 0; s < duration.length; s++) {
-                                    let character = duration.charAt(s);
-                                    character = character.toLowerCase();
-
-                                    if (character === "p" || character === "t") {
-                                        continue;
-                                    }
-                                    if (character === "h") {
-                                        auxh += aux_char                       
-                                        aux_char = ""
-                                        continue;
-                                    }
-                                    if (character === "m") {
-                                        auxm = aux_char;
-                                        aux_char = ""
-                                        continue;
-                                    }
-                                    if (character === "s") {
-                                        auxs = aux_char;
-                                        aux_char = ""
-                                        continue;
-                                    }
-                                    aux_char += character;
-
-                                }
-                                //Missing the condition that asure if the duration is from the same date, then, add it!!
-                                //Solution: create another aux2 and add the new task duration to it
-                                
-                                hour+=parseInt(auxh);
-                                min+=parseInt(auxm);
-                                sec+=parseInt(auxs);
-                                let d = new Date();
-                                d.setHours(hour);
-                                d.setMinutes(min);
-                                d.setSeconds(sec)
-                                duration= d.toString()
-                                duration = duration.slice(15,24);
-                                
-                                console.log(this.HoursperDay)
                                 
                             }
                             /* @@@@@@@@@@@@@@@@-- ADDING REGISTER WITH GOOD DATA --@@@@@@@@@@@@@ */
@@ -254,10 +206,70 @@ class Info extends React.Component {
                 }
             }
  
+            this.getDuration()
+
+
+        }
+
+        this.getDuration=()=>{
+            let hour = 0, min = 0, sec = 0;
+            this.keyDates.map((date) => {
+                hour = 0;
+                min = 0;
+                sec = 0;
+                for (let index = 0; index <this.LOGS[0][date].length; index++) {
+                    
+                
+                    let auxh = 0,auxm =0, auxs = 0;
+                    let duration = this.LOGS[0][date][index][3];
+                    
+                    let aux_char = "";
+                    for (let s = 0; s < duration.length; s++) {
+                        let character = duration.charAt(s);
+                        character = character.toLowerCase();
+
+                        if (character === "p" || character === "t") {
+                            continue;
+                        }
+                        if (character === "h") {
+                            auxh += aux_char                       
+                            aux_char = ""
+                            continue;
+                        }
+                        if (character === "m") {
+                            auxm = aux_char;
+                            aux_char = ""
+                            continue;
+                        }
+                        if (character === "s") {
+                            auxs = aux_char;
+                            aux_char = ""
+                            continue;
+                        }
+                        aux_char += character;
+
+                    }
+
+                    
+                    hour+=parseInt(auxh);
+                    min+=parseInt(auxm);
+                    sec+=parseInt(auxs);
+                
+                }
+                let d = new Date();
+                d.setHours(hour);
+                d.setMinutes(min);
+                d.setSeconds(sec)
+                let str = d.toString()
+                this.LOGS[0][date][0][3] = str.slice(15,24);
+                this.HoursperDay.push(hour+"."+min)//First DURATION is trash, I remove it in Chart()
+            }) 
+            
+            
+            
+            console.log(this.HoursperDay.push(hour+"."+min))
             this.chartInfo();
-            this.showLogs(this.keyDates);
-
-
+            this.showLogs();
         }
 
 
