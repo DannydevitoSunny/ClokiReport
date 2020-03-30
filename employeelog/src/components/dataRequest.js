@@ -200,7 +200,7 @@ class Info extends React.Component {
 
 
                     }
-                    console.log(this.HoursperDay)
+            
                     break;
                     
                 }
@@ -213,62 +213,76 @@ class Info extends React.Component {
 
         this.getDuration=()=>{
             let hour = 0, min = 0, sec = 0;
-            this.keyDates.map((date) => {
-                hour = 0;
-                min = 0;
-                sec = 0;
-                for (let index = 0; index <this.LOGS[0][date].length; index++) {
-                    
+            let currentDate =  new Date();
+            let currentYear = currentDate.getFullYear();
+            let currentMonth = currentDate.getMonth();
+            let month_length = new Date(currentYear, currentMonth+1, 0).getDate();
+         
+            for (let day = 1; day <= month_length; day++) {
+               
+                let currentDay = this.keyDates[1].slice(8, 10);
+                console.log(currentDay );
+                if (day == currentDay ){
+                    hour = 0;
+                    min = 0;
+                    sec = 0;
+                  
+                    for (let index = 0; index <this.LOGS[0][this.keyDates[day]].length; index++) { //number of tasks in this day
                 
-                    let auxh = 0,auxm =0, auxs = 0;
-                    let duration = this.LOGS[0][date][index][3];
+            
+                        let auxh = 0,auxm =0, auxs = 0;
+                        let duration = this.LOGS[0][this.keyDates[day]][index][3];
+                        
+                        let aux_char = "";
+                        for (let s = 0; s < duration.length; s++) {
+                            let character = duration.charAt(s);
+                            character = character.toLowerCase();
+    
+                            if (character === "p" || character === "t") {
+                                continue;
+                            }
+                            if (character === "h") {
+                                auxh += aux_char                       
+                                aux_char = ""
+                                continue;
+                            }
+                            if (character === "m") {
+                                auxm = aux_char;
+                                aux_char = ""
+                                continue;
+                            }
+                            if (character === "s") {
+                                auxs = aux_char;
+                                aux_char = ""
+                                continue;
+                            }
+                            aux_char += character;
+    
+                        }
+    
+                        
+                        hour+=parseInt(auxh);
+                        min+=parseInt(auxm);
+                        sec+=parseInt(auxs);
                     
-                    let aux_char = "";
-                    for (let s = 0; s < duration.length; s++) {
-                        let character = duration.charAt(s);
-                        character = character.toLowerCase();
-
-                        if (character === "p" || character === "t") {
-                            continue;
-                        }
-                        if (character === "h") {
-                            auxh += aux_char                       
-                            aux_char = ""
-                            continue;
-                        }
-                        if (character === "m") {
-                            auxm = aux_char;
-                            aux_char = ""
-                            continue;
-                        }
-                        if (character === "s") {
-                            auxs = aux_char;
-                            aux_char = ""
-                            continue;
-                        }
-                        aux_char += character;
-
                     }
+                    let d = new Date();
+                    d.setHours(hour);
+                    d.setMinutes(min);
+                    d.setSeconds(sec)
+                    let str = d.toString()
+                    this.LOGS[0][this.keyDates[day]][0][3] = str.slice(15,24);
+                 
+                    this.HoursperDay.push(hour+"."+min)//First DURATION in array is trash, I remove it in the Chart() function
 
-                    
-                    hour+=parseInt(auxh);
-                    min+=parseInt(auxm);
-                    sec+=parseInt(auxs);
-                
                 }
-                let d = new Date();
-                d.setHours(hour);
-                d.setMinutes(min);
-                d.setSeconds(sec)
-                let str = d.toString()
-                this.LOGS[0][date][0][3] = str.slice(15,24);
-                this.HoursperDay.push(hour+"."+min)//First DURATION is trash, I remove it in Chart()
-            }) 
-            
-            
-            
-            console.log(this.HoursperDay.push(hour+"."+min))
-            this.chartInfo();
+                else{
+                    this.HoursperDay.push(0);
+                }
+                
+            }
+      
+            this.chartInfo(currentYear,currentMonth);
             this.showLogs();
         }
 
@@ -299,7 +313,7 @@ class Info extends React.Component {
         }
 
         this.chartInfo = (y,m) => {
-            this.HoursperDay.shift()
+        
             let days_length = new Date(y, m, 0).getDate();
             this.days = [];
             for (let day = 1; day <= days_length; day++) {
