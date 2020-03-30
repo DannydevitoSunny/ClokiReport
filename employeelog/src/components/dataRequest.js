@@ -118,7 +118,13 @@ class Info extends React.Component {
             for (let x = 0; x < this.users.length; x++) {
                 //Making requests for each user 
                 this.getLogs(this.users[x].workspace, this.users[x].id);
-
+                let currentDate =  new Date();
+                let currentYear = currentDate.getFullYear();
+                let currentMonth = currentDate.getMonth();
+                currentMonth = currentMonth+1;
+                if (currentMonth < 10) {
+                    currentMonth = "0"+currentMonth
+                }
                 //SHOW USERS
                 this.setState({
                     usersData: this.users.map((item) => {
@@ -128,7 +134,7 @@ class Info extends React.Component {
                                 <td className="">{item.name}  </td>
                                 <td className="">{item.id}  </td>
                                 <td className="">{item.workspace}  </td>
-                                <td><button className="btn text-white bg-secondary" onClick={() => this.generateLogs(item.id, "2020-03")}>Info</button></td>
+                                <td><button className="btn text-white bg-secondary" onClick={() => this.generateLogs(item.id, currentYear+"-"+currentMonth)}>Info</button></td>
                             </tr>
                         )
                     })
@@ -216,72 +222,84 @@ class Info extends React.Component {
             let currentDate =  new Date();
             let currentYear = currentDate.getFullYear();
             let currentMonth = currentDate.getMonth();
-            let month_length = new Date(currentYear, currentMonth+1, 0).getDate();
-         
+            currentMonth=currentMonth+1;
+            let month_length = new Date(currentYear, currentMonth, 0).getDate();
+            console.log(this.keyDates)
             for (let day = 1; day <= month_length; day++) {
-               
-                let currentDay = this.keyDates[1].slice(8, 10);
-                console.log(currentDay );
-                if (day == currentDay ){
-                    hour = 0;
-                    min = 0;
-                    sec = 0;
-                  
-                    for (let index = 0; index <this.LOGS[0][this.keyDates[day]].length; index++) { //number of tasks in this day
-                
-            
-                        let auxh = 0,auxm =0, auxs = 0;
-                        let duration = this.LOGS[0][this.keyDates[day]][index][3];
+                let match = 0;
+                for (let j = 0; j < this.keyDates.length; j++) {
+                    let currentDay = this.keyDates[j].slice(8,10);
+                    currentDay = parseInt(currentDay);
+                    if (currentDay === day) {
+                        match =1;
+                        hour = 0;
+                        min = 0;
+                        sec = 0;
+                        let date = this.keyDates[j];
                         
-                        let aux_char = "";
-                        for (let s = 0; s < duration.length; s++) {
-                            let character = duration.charAt(s);
-                            character = character.toLowerCase();
-    
-                            if (character === "p" || character === "t") {
-                                continue;
-                            }
-                            if (character === "h") {
-                                auxh += aux_char                       
-                                aux_char = ""
-                                continue;
-                            }
-                            if (character === "m") {
-                                auxm = aux_char;
-                                aux_char = ""
-                                continue;
-                            }
-                            if (character === "s") {
-                                auxs = aux_char;
-                                aux_char = ""
-                                continue;
-                            }
-                            aux_char += character;
-    
-                        }
-    
-                        
-                        hour+=parseInt(auxh);
-                        min+=parseInt(auxm);
-                        sec+=parseInt(auxs);
+                        for (let index = 0; index <this.LOGS[0][date].length; index++) { //number of tasks in this day
                     
-                    }
-                    let d = new Date();
-                    d.setHours(hour);
-                    d.setMinutes(min);
-                    d.setSeconds(sec)
-                    let str = d.toString()
-                    this.LOGS[0][this.keyDates[day]][0][3] = str.slice(15,24);
-                 
-                    this.HoursperDay.push(hour+"."+min)//First DURATION in array is trash, I remove it in the Chart() function
+                            console.log(date);
+                            let auxh = 0,auxm =0, auxs = 0;
+                            let duration = this.LOGS[0][date][index][3];
+                            
+                            let aux_char = "";
+                            for (let s = 0; s < duration.length; s++) {
+                                let character = duration.charAt(s);
+                                character = character.toLowerCase();
+        
+                                if (character === "p" || character === "t") {
+                                    continue;
+                                }
+                                if (character === "h") {
+                                    auxh += aux_char                       
+                                    aux_char = ""
+                                    continue;
+                                }
+                                if (character === "m") {
+                                    auxm = aux_char;
+                                    aux_char = ""
+                                    continue;
+                                }
+                                if (character === "s") {
+                                    auxs = aux_char;
+                                    aux_char = ""
+                                    continue;
+                                }
+                                aux_char += character;
+        
+                            }
+        
+                            
+                            hour+=parseInt(auxh);
+                            min+=parseInt(auxm);
+                            sec+=parseInt(auxs);
 
+                        
+                        }
+                        let d = new Date();
+                        d.setHours(hour);
+                        d.setMinutes(min);
+                        d.setSeconds(sec)
+                        let str = d.toString()
+                        this.LOGS[0][date][0][3] = str.slice(15,24);
+                        
+                        this.HoursperDay.push(hour+"."+min)//First DURATION in array is trash, I remove it in the Chart() function
+                        break;
+                    }
+                    
+                       
+                
+                    
                 }
-                else{
-                    this.HoursperDay.push(0);
+                if (match === 0){
+                    this.HoursperDay.push(0)
                 }
+            
+                  
                 
             }
-      
+            console.log(this.HoursperDay)
             this.chartInfo(currentYear,currentMonth);
             this.showLogs();
         }
@@ -327,7 +345,7 @@ class Info extends React.Component {
                     labels: this.days,
                     datasets: [
                         {
-                            label: 'My First dataset',
+                            label: 'Hours per day',
                             backgroundColor: 'rgba(255,99,132,0.2)',
                             borderColor: 'rgba(255,99,132,1)',
                             borderWidth: 1,
