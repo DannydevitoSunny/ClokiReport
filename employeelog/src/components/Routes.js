@@ -1,15 +1,22 @@
 import React from "react";
 import { Route, Switch, Link, BrowserRouter as Router, } from "react-router-dom";
-import Visualize from './mainBody.js'
 import Info from './dataRequest.js'
 import Login from './login.js'
+import Tweaks from './apiKey';
 
 
 class RouteSS extends React.Component {
     constructor(props){
         super(props)
+        
         this.fun=()=>{
                 this.body.className="hold-transition sidebar-collapse"
+        }
+        this.state = {
+            key: ""
+        }
+        this.getkey = (value) => {
+            this.setState({ key: value })
         }
     }
 
@@ -27,12 +34,7 @@ class RouteSS extends React.Component {
                     <li className="nav-item">
                         <a className="nav-link" data-widget="pushmenu" href="#"><i className="fas fa-bars"></i></a>
                     </li>
-                    <li className="nav-item d-none d-sm-inline-block">
-                        <Link to="/"><a href="./AdminLTE-3.0.2/index3.html" className="nav-link">Home</a> </Link>
-                    </li>
-                    <li className="nav-item d-none d-sm-inline-block">
-                        <Link to="/report"><a href="#" className="nav-link">Info</a></Link>
-                    </li>
+                    
 
                 </ul>
             </nav>
@@ -58,25 +60,28 @@ class RouteSS extends React.Component {
                                 </p>
                             </li>
                             <li className="nav-item">
-                                <a href="" className="nav-link disabled">
+                            <Link to="/"><a href="" className="nav-link ">
                                     <i className="far fa-circle nav-icon"></i>
-                                    <p>Page 1</p>
+                                   <p> Home</p>
                                 </a>
+                            </Link>
                             </li>
                             <li className="nav-item">
-                                <a href="" className="nav-link disabled">
+                            <Link to="/report"><a href="" className="nav-link">
                                     <i className="far fa-circle nav-icon"></i>
-                                    <p>Page 2</p>
+                                    <p>Info</p>
                                 </a>
+                            </Link>
                             </li>
                             <li className="nav-item">
-                                <a href="" className="nav-link disabled">
+                            <Link to="/tweaks"> <a href="" className="nav-link">
                                     <i className="far fa-circle nav-icon"></i>
-                                    <p>Page 3</p>
+                                    <p>Configuration</p>
                                 </a>
+                            </Link>
                             </li>
                             <li className="nav-item">
-                                <a href="" className="nav-link active">
+                                <a href="" className="nav-link">
                                     <i className="far fa-circle nav-icon"></i>
                                     <p>Log out</p>
                                 </a>
@@ -94,10 +99,11 @@ class RouteSS extends React.Component {
 
                             <Switch>
 
-                                <Route path="/report" exact component={Visualize}></Route>
+                                <Route path="/report" exact render={(props) => <Info {...props} param1={this.state.key} />} ></Route>
+                                <Route path="/tweaks" exact render={(props) => <Tweaks {...props} update={this.getkey} />}></Route>
                               
                             </Switch>
-
+                            
 
                         </div>
 

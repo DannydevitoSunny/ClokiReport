@@ -5,17 +5,26 @@ import { Bar } from 'react-chartjs-2';
 class Info extends React.Component {
     constructor(props) {
         super(props);
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth();
+        currentMonth = currentMonth + 1;
         this.days = [];
-        this.HoursperDay=[];
+        this.HoursperDay = [];
         this.logResponse = [];
         this.users = [];
         this.keysDate = [];
         this.state = {
             usersData: "",
             log: "",
+            booleanArray:[],
+            startYear: currentYear,
+            startMonth: currentMonth,
             selectedUser: "",
+            workspace: "",
             newKey: "XWor3IxeV2M9g/mQ",
             goodKey: "",
+            id: "",
             data: {
                 labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
                 datasets: [
@@ -38,9 +47,13 @@ class Info extends React.Component {
 
         //--------------- M E T H O D S ---------------------------
 
-        this.getLogs = (usersworkspace, usersid) => {
+        this.getLogs = (y, m) => {
+            this.logResponse = []
+            let days_length = new Date(y, m, 0).getDate();
+            days_length = days_length;
+            console.clear();
             var xhttp = new XMLHttpRequest();
-            let url = 'https://api.clockify.me/api/v1/workspaces/' + usersworkspace + '/user/' + usersid + '/time-entries?page-size=2500';
+            let url = 'https://api.clockify.me/api/v1/workspaces/' + this.state.workspace + '/user/' + this.state.selectedUser + '/time-entries?start=' + y + '-' + m + '-01T00:00:14Z&end=' + y + '-' + m + '-' + days_length + 'T23:59:14Z&page-size=2500';
             xhttp.open('GET', url, true);
             xhttp.setRequestHeader("Content-type", "application/json");
 
@@ -50,25 +63,23 @@ class Info extends React.Component {
                 if (this.readyState === 4 && this.status === 200) {
                     let answer = this.responseText;
                     answer = JSON.parse(answer);
-
                     add(answer);
                 }
             }
             let add = (answer) => {
-                this.logResponse.push(answer);
-
-
+                //CALBACK SHOW LOGS
+                if (answer.length !== 0) {
+                    this.logResponse.push(answer);
+                    this.generateLogs()
+                }
             }
 
         }
 
         this.getUsers = (newKey) => {
-
             //New request clear the old data (refresh)
             this.logResponse = [];
             this.users = [];
-            this.LOGS = [];
-            this.keysDate = [];
             let url = 'https://api.clockify.me/api/v1/workspaces/5c334808b079874ebdd7c345/users';
             var xhttp = new XMLHttpRequest();
 
@@ -83,70 +94,64 @@ class Info extends React.Component {
                     let answer = xhttp.responseText;
                     answer = JSON.parse(answer);
                     call(answer);
-
-
                 }
                 else {
                     call("badkey")
-
                 }
             }
-            let call = (u) => {
-                if (u === "badkey") {
+            let call = (response) => {
+                if (response === "badkey") {
                     this.setState({ goodKey: "The key is wrong, try again!" })
                 }
                 else {
                     this.setState({ goodKey: "" })
-                    this.fetchUsers(u);
+                    this.users = [];
+                    for (const user of response) {
+                        if (user.memberships[0].membershipStatus === "ACTIVE") {
+                            this.users.push({ "name": user.name, "id": user.id, "workspace": user.activeWorkspace });
+                        }
+                    }
+                   
+                    this.fetchUsers();
                 }
-
             }
-
         }
 
-
-        this.fetchUsers = (response) => {
-
-            this.users = [];
-            for (const user of response) {
-                if (user.memberships[0].membershipStatus === "ACTIVE") {
-                    this.users.push({ "name": user.name, "id": user.id, "workspace": user.activeWorkspace });
-                }
-
-            }
-
-            for (let x = 0; x < this.users.length; x++) {
-                //Making requests for each user 
-                this.getLogs(this.users[x].workspace, this.users[x].id);
-                let currentDate =  new Date();
-                let currentYear = currentDate.getFullYear();
-                let currentMonth = currentDate.getMonth();
-                currentMonth = currentMonth+1;
-                if (currentMonth < 10) {
-                    currentMonth = "0"+currentMonth
-                }
-                //SHOW USERS
-                this.setState({
-                    usersData: this.users.map((item) => {
-                        return (
-                            <tr key={item.id}  >
-
-                                <td className="">{item.name}  </td>
-                                <td className="">{item.id}  </td>
-                                <td className="">{item.workspace}  </td>
-                                <td><button className="btn text-white bg-secondary" onClick={() => this.generateLogs(item.id, currentYear+"-"+currentMonth)}>Info</button></td>
-                            </tr>
-                        )
-                    })
+  
+        this.fetchUsers = () => {
+                
+            let i =0;
+            this.setState({
+                usersData: this.users.map((item) => {
+                    return (
+                        <tr key={item.id} style={{ cursor: "pointer" }} >
+                            <td className="">{item.name}  </td>
+                            <td className="">{item.id}  </td>
+                            <td className="">{item.workspace}  </td>
+                            <td><label for={i}>Select </label><input className="ml-2" type="radio" id={i++} onClick={(e) => this.showCurrent(e,item.workspace, item.id)}  ></input></td>
+                         
+                        </tr>
+                    )
                 })
-
-            }
-
+            })
         }
-        this.generateLogs = (selected, searchDate) => {
-            console.clear();
+        this.showCurrent = (event, workspace, id) => {
             
-            this.setState({ selectedUser: selected });
+            let id_element = event.target.id;
+            for (let x = 0; x < this.users.length; x++) {
+                if (id_element ==x) {
+                    document.getElementById(x).checked=true;
+                }
+                else{
+                    document.getElementById(x).checked=false;
+                }
+                
+            }
+            this.setState({ selectedUser: id })
+            this.setState({ workspace: workspace })
+        }
+
+        this.generateLogs = () => {
             this.LOGS = [];
             this.keyDates = [];
             let auxDate = "";
@@ -157,7 +162,7 @@ class Info extends React.Component {
                 let startH, endH;
                 let user;
                 let duration = "";
-                let TaskDate = "";
+
                 for (let j = 0; j < this.users.length; j++) {
                     if (this.users[j].id === this.logResponse[x][0]["userId"]) {
                         user = this.users[j].name;
@@ -165,94 +170,74 @@ class Info extends React.Component {
                     }
                 }
 
-                if (this.logResponse[x][0]["userId"] === selected) {
-                    this.HoursperDay=[]
-                    for (let z = this.logResponse[x].length - 1; z >= 0; z--) {// ----> LOOP  OF  T A S K S
-                        
-
-                        //----------------APPLIYING DATE FILTER
-                        if (this.logResponse[x][z]["timeInterval"]["start"].substring(0, 10).includes(searchDate)) {
-                            
-                            let reg = []
-                            startDate = this.logResponse[x][z]["timeInterval"]["start"].substring(0, 10);
-                            startH = this.logResponse[x][z]["timeInterval"]["start"].substring(11, 19);
-                            //If is null, that is mean the user is working on it
-                            if (this.logResponse[x][z]["timeInterval"]["end"] == null) {
-                                endH = "UNKNOWN"
-                                duration = "UNKNOWN"
-                            }
-                            else {
-                                endH = this.logResponse[x][z]["timeInterval"]["end"].substring(11, 19);
-                                duration = this.logResponse[x][z]["timeInterval"]["duration"];
-                                
-                            }
-                            /* @@@@@@@@@@@@@@@@-- ADDING REGISTER WITH GOOD DATA --@@@@@@@@@@@@@ */
-
-                            reg = [startDate, startH, endH, duration, user];
-                            if (startDate !== newStartDate) {
-                                newStartDate = startDate; //New date as index
-                                this.LOGS[0][newStartDate] = []; //CREATING NEW START DATE ARRAY
-                                this.LOGS[0][newStartDate].push(reg);
-                            }
-                            else {
-                                this.LOGS[0][newStartDate].push(reg);
-                            }
-                            if (auxDate !== newStartDate) {
-                                auxDate = newStartDate;
-                                this.keyDates.push(auxDate);
-                            }
-
-                        }
-
+                for (let z = this.logResponse[x].length - 1; z >= 0; z--) {// ----> LOOP  OF  T A S K S
+                    let reg = []
+                    startDate = this.logResponse[x][z]["timeInterval"]["start"].substring(0, 10);
+                    startH = this.logResponse[x][z]["timeInterval"]["start"].substring(11, 19);
+                    //If is null, that is mean the user is working on it
+                    if (this.logResponse[x][z]["timeInterval"]["end"] == null) {
+                        endH = "UNKNOWN"
+                        duration = "UNKNOWN"
+                    }
+                    else {
+                        endH = this.logResponse[x][z]["timeInterval"]["end"].substring(11, 19);
+                        duration = this.logResponse[x][z]["timeInterval"]["duration"];
 
                     }
-            
-                    break;
-                    
+                    /* @@@@@@@@@@@@@@@@-- ADDING REGISTER WITH GOOD DATA --@@@@@@@@@@@@@ */
+
+                    reg = [startDate, startH, endH, duration, user];
+                    if (startDate !== newStartDate) {
+                        newStartDate = startDate; //New date as index
+                        this.LOGS[0][newStartDate] = []; //CREATING NEW START DATE ARRAY
+                        this.LOGS[0][newStartDate].push(reg);
+                    }
+                    else {
+                        this.LOGS[0][newStartDate].push(reg);
+                    }
+                    if (auxDate !== newStartDate) {
+                        auxDate = newStartDate;
+                        this.keyDates.push(auxDate);
+                    }
                 }
+                break;
             }
- 
             this.getDuration()
-
-
         }
 
-        this.getDuration=()=>{
+        this.getDuration = () => {
+            this.HoursperDay = []
             let hour = 0, min = 0, sec = 0;
-            let currentDate =  new Date();
+            let currentDate = new Date();
             let currentYear = currentDate.getFullYear();
             let currentMonth = currentDate.getMonth();
-            currentMonth=currentMonth+1;
+            currentMonth = currentMonth + 1;
             let month_length = new Date(currentYear, currentMonth, 0).getDate();
-            console.log(this.keyDates)
             for (let day = 1; day <= month_length; day++) {
                 let match = 0;
                 for (let j = 0; j < this.keyDates.length; j++) {
-                    let currentDay = this.keyDates[j].slice(8,10);
+                    let currentDay = this.keyDates[j].slice(8, 10);
                     currentDay = parseInt(currentDay);
                     if (currentDay === day) {
-                        match =1;
+                        match = 1;
                         hour = 0;
                         min = 0;
                         sec = 0;
                         let date = this.keyDates[j];
-                        
-                        for (let index = 0; index <this.LOGS[0][date].length; index++) { //number of tasks in this day
-                    
-                            console.log(date);
-                            let auxh = 0,auxm =0, auxs = 0;
+
+                        for (let index = 0; index < this.LOGS[0][date].length; index++) { //number of tasks in this day
+                            let auxh = 0, auxm = 0, auxs = 0;
                             let duration = this.LOGS[0][date][index][3];
-                            
                             let aux_char = "";
                             for (let s = 0; s < duration.length; s++) {
                                 let character = duration.charAt(s);
                                 character = character.toLowerCase();
-        
+
                                 if (character === "p" || character === "t") {
                                     continue;
                                 }
                                 if (character === "h") {
-                                    auxh += aux_char                       
+                                    auxh += aux_char
                                     aux_char = ""
                                     continue;
                                 }
@@ -267,43 +252,33 @@ class Info extends React.Component {
                                     continue;
                                 }
                                 aux_char += character;
-        
-                            }
-        
-                            
-                            hour+=parseInt(auxh);
-                            min+=parseInt(auxm);
-                            sec+=parseInt(auxs);
 
-                        
+                            }
+                            hour += parseInt(auxh);
+                            min += parseInt(auxm);
+                            sec += parseInt(auxs);
                         }
                         let d = new Date();
                         d.setHours(hour);
                         d.setMinutes(min);
                         d.setSeconds(sec)
-                        let str = d.toString()
-                        this.LOGS[0][date][0][3] = str.slice(15,24);
-                        
-                        this.HoursperDay.push(hour+"."+min)//First DURATION in array is trash, I remove it in the Chart() function
+                        let duration = d.toString()
+                        let goodFormat = duration.slice(15, 24)
+                        this.LOGS[0][date][0][3] = duration.slice(15, 24);
+                        goodFormat = goodFormat.replace(":", ".")
+                        this.HoursperDay.push(goodFormat.slice(1, 6).trim())
+
                         break;
                     }
-                    
-                       
-                
-                    
                 }
-                if (match === 0){
+                if (match === 0) {
                     this.HoursperDay.push(0)
                 }
-            
-                  
-                
             }
-            console.log(this.HoursperDay)
-            this.chartInfo(currentYear,currentMonth);
+
+            this.chartInfo(currentYear, currentMonth);
             this.showLogs();
         }
-
 
         this.showLogs = () => {
             this.setState({
@@ -330,16 +305,14 @@ class Info extends React.Component {
             newWin.close();
         }
 
-        this.chartInfo = (y,m) => {
-        
+        this.chartInfo = (y, m) => {
+
             let days_length = new Date(y, m, 0).getDate();
             this.days = [];
             for (let day = 1; day <= days_length; day++) {
                 this.days.push(day);
 
             }
-
-
             this.setState({
                 data: {
                     labels: this.days,
@@ -351,7 +324,7 @@ class Info extends React.Component {
                             borderWidth: 1,
                             hoverBackgroundColor: 'rgba(255,99,132,0.4)',
                             hoverBorderColor: 'rgba(255,99,132,1)',
-                            data:this.HoursperDay
+                            data: this.HoursperDay
                         }
                     ]
                 }
@@ -360,31 +333,22 @@ class Info extends React.Component {
         }
 
         this.filterDate = () => {
-            let FDate = this.year.value+"-"+this.select.value;
-            this.generateLogs(this.state.selectedUser, FDate)
-            this.chartInfo(this.year.value,this.select.value)
-
+            //Values from my Input
+            this.getLogs(this.year.value, this.select.value)
+            this.chartInfo(this.year.value, this.select.value)
         }
-
-
     }
 
     render() {
-
-
-
         return (
             <div >
-
-
-
                 {/*@@@@@@@@@@@@@@@@@@@@@@@@@@ T A B L E   U S E R S  */}
                 <div className="row">
                     <div className="col-12">
                         <div className="card">
                             <div className="card-header">
 
-                                <button className="btn bg-primary" onClick={() => this.getUsers(this.key)} >Get Report</button>
+                                <button className="btn bg-primary" onClick={() => this.getUsers(this.key)} >Get Report </button>
                                 <h3 className="">New key : <span className="border-bottom p-2 text-primary border-primary">{(this.props.param1 !== "") ? this.key = this.props.param1 : this.key = "XWor3IxeV2M9g/mQ"}</span></h3>
                                 <p className="text-danger">{this.state.goodKey}</p>
                                 <h3 className="card-title">Table Users</h3>
@@ -409,10 +373,6 @@ class Info extends React.Component {
 
                     </div>
                 </div>
-
-                {/*    @@@@@@@@@@@@@@@@@@@ P A G E S @@@@@@@@@@@@@@@@@@@@@@@@@ */}
-
-
                 {/* @@@@@@@@@@@@@@@@@@@@@@@@@@ T A B L E   L O G S  */}
                 <div className="row">
                     <div className="col-12">
@@ -420,7 +380,7 @@ class Info extends React.Component {
                             <div className="card-header">
                                 <h3 className="card-title">Select Date: </h3>
                                 <p>
-                                    <select className="ml-4" ref={select =>{this.select=select}}>
+                                    <select className="ml-4" ref={select => { this.select = select }}>
                                         <option>- Month -</option>
                                         <option value="01">January</option>
                                         <option value="02">Febuary</option>
@@ -435,55 +395,50 @@ class Info extends React.Component {
                                         <option value="11">November</option>
                                         <option value="12">December</option>
                                     </select>
-                                    <input type="text" maxLength="4" placeholder="Year" ref={year => {this.year=year}}></input>
+                                    <input type="text" maxLength="4" placeholder="Year" ref={year => { this.year = year }}></input>
                                     <button className="btn text-white bg-secondary" onClick={this.filterDate}>Search</button>
                                 </p>
+                            </div>
 
-
+                            <div className="card-body table-responsive p-0" ref={div => { this.div = div }} id="printTable">
+                                <table className="table table-head-fixed text-nowrap" >
+                                    <thead>
+                                        <tr>
+                                            <th>Start Date</th>
+                                            <th>Start Hour</th>
+                                            <th>End Hour</th>
+                                            <th>Duration</th>
+                                            <th>Worker</th>
+                                            <th><button className="btn bg-primary" onClick={this.printData}>Print table</button></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {this.state.log}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
-                        <div className="card-body table-responsive p-0" ref={div => { this.div = div }} id="printTable">
-                            <table className="table table-head-fixed text-nowrap" >
-                                <thead>
-                                    <tr>
-                                        <th>Start Date</th>
-                                        <th>Start Hour</th>
-                                        <th>End Hour</th>
-                                        <th>Duration</th>
-                                        <th>Worker</th>
-                                        <th><button className="btn bg-primary" onClick={this.printData}>Print table</button></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this.state.log}
-                                </tbody>
-                            </table>
+                    </div>
+                </div>
+                {/* @@@@@@@@@@@@@@@@@@@ G E N E R A T E   C H A R T @@@@@@@  */}
+                <div className="card card-primary">
+                    <div className="card-header">
+                        <h3 className="card-title">March</h3>
+
+                        <div className="card-tools">
+                            <button type="button" className="btn btn-tool" data-card-widget="collapse"><i className="fas fa-minus"></i>
+                            </button>
+                            <button type="button" className="btn btn-tool" data-card-widget="remove"><i className="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div className="card-body">
+                        <div className="chart">
+                            <Bar data={this.state.data} />
                         </div>
                     </div>
 
                 </div>
-            </div>
-
-                 {/* @@@@@@@@@@@@@@@@@@@ G E N E R A T E   C H A R T @@@@@@@  */ }
-        <div className="card card-primary">
-            <div className="card-header">
-                <h3 className="card-title">March</h3>
-
-                <div className="card-tools">
-                    <button type="button" className="btn btn-tool" data-card-widget="collapse"><i className="fas fa-minus"></i>
-                    </button>
-                    <button type="button" className="btn btn-tool" data-card-widget="remove"><i className="fas fa-times"></i></button>
-                </div>
-            </div>
-            <div className="card-body">
-                <div className="chart">
-                    <Bar data={this.state.data} />
-                </div>
-            </div>
-
-        </div>
-                
-                
             </div >
 
         );

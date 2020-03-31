@@ -22,7 +22,7 @@ class ApiKey extends React.Component {
           <div className="container-fluid">
             <div className="row mb-2">
               <div className="col-sm-6">
-                <h1>Welcome to Cloki-Report</h1>
+                <h1>Configuration</h1>
               </div>
             </div>
           </div>
