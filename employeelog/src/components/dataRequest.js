@@ -15,7 +15,7 @@ class Info extends React.Component {
         this.logResponse = [];
         this.keysDate = [];
         this.state = {
-            name: "Not selected",
+            name: "Selected User",
             usersData: "",
             log: "",
             booleanArray:[],
@@ -137,7 +137,7 @@ class Info extends React.Component {
         }
 
         this.showCurrent = ( workspace, id, name) => {
-            
+            this.userName = name
             for (let i =0;i< this.state.users.length;i++) {
                 if (name === this.state.users[i].name) {
                    this.state.users[i].classTr = "bg-primary";
@@ -147,7 +147,6 @@ class Info extends React.Component {
                 }
             }
             this.fetchUsers();
-            this.setState({name:name});
             this.setState({ selectedUser: id })
             this.setState({ workspace: workspace })
         }
@@ -328,6 +327,7 @@ class Info extends React.Component {
         this.printData = () => {
             let style='<style>body{font-family:sans-serif; font-size: 0.9em;}\
             div table {\
+                text-align:center;\
                 border-collapse: collapse;\
                 width: 100%;\
                 font-size: 0.9em;\
@@ -352,11 +352,11 @@ class Info extends React.Component {
             let newWin = window.open();
             newWin.document.write('<head>'+style+'</head>')
             newWin.document.write("<body>\
-           <section class='content'><h2>Printing Report</h2>")
-            newWin.document.write('<p>Date Report:'+this.year.value+'/'+this.select.value+',  Company:<i>Comerline</i></p>\
-            <h3>Worker : '+this.NameUser+'</h3><div style="width:50%;">'+this.div.innerHTML+'</div></section></body>');
+           <section class='content'><h2 style='color:#3366ff'>Printing Report</h2>")
+            newWin.document.write('<p><b>Date Report:</b>'+this.year.value+'/'+this.select.value+',  <b>Company:</b><i>Comerline</i></p>\
+            <h3>Worker : '+this.state.name+'</h3><div style="width:50%;">'+this.div.innerHTML+'</div></section></body>');
             newWin.print();
-            newWin.close();
+           
           
         }
 
@@ -388,7 +388,7 @@ class Info extends React.Component {
         }
 
         this.filterDate = () => {
-            //Values from my Input
+            this.setState({name:this.userName});
             this.getLogs(this.year.value, this.select.value)
             
         }
@@ -460,10 +460,10 @@ class Info extends React.Component {
 
                                     </select>
                                     
-                                    <button className="btn text-white bg-secondary" onClick={this.filterDate}>Search</button>
+                                    <button className="btn text-white bg-secondary ml-2" onClick={this.filterDate}>Search</button>
                                     <button className="btn bg-primary" style={{marginLeft:"100px"}} onClick={this.printData}>Print table</button>
                                 </p>
-                                <h2>{this.state.name}</h2>
+                                <h2 className="bg-primary rounded w-25 p-1 pl-4">{this.state.name}</h2>
                             </div>
 
                             <div className="card-body table-responsive p-0" ref={div => { this.div = div }} id="printTable">

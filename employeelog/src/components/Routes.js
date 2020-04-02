@@ -60,30 +60,33 @@ class RouteSS extends React.Component {
                                 </p>
                             </li>
                             <li className="nav-item">
-                            <Link to="/"><a href="" className="nav-link ">
-                                    <i className="far fa-circle nav-icon"></i>
-                                   <p> Home</p>
+                            <Link to="/">
+                                <a href="" className="nav-link ">
+                                    <i className="fa fa-home fa-lg"></i>
+                                   <p className="ml-1">Home</p>
                                 </a>
                             </Link>
                             </li>
                             <li className="nav-item">
-                            <Link to="/report"><a href="" className="nav-link">
-                                    <i className="far fa-circle nav-icon"></i>
-                                    <p>Info</p>
+                            <Link to="/report">
+                                <a href="" className="nav-link">
+                                    <i className="fas fa-table fa-lg"></i>
+                                    <p className="ml-1">Info</p>
                                 </a>
                             </Link>
                             </li>
                             <li className="nav-item">
-                            <Link to="/tweaks"> <a href="" className="nav-link">
-                                    <i className="far fa-circle nav-icon"></i>
-                                    <p>Configuration</p>
+                            <Link to="/tweaks"> 
+                                <a href="" className="nav-link">
+                                <i className="fas fa-cog fa-lg"></i>
+                                    <p className="ml-1">Configuration</p>
                                 </a>
                             </Link>
                             </li>
                             <li className="nav-item">
                                 <a href="" className="nav-link">
-                                    <i className="far fa-circle nav-icon"></i>
-                                    <p>Log out</p>
+                                    <i className="fas fa-user fa-lg"></i>
+                                    <p className="ml-1">Log out</p>
                                 </a>
                             </li>
                         </ul>
