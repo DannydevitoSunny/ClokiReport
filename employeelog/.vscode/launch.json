@@ -5,11 +5,15 @@
         "type": "firefox",
         "request": "launch",
         "reAttach": true,
-        "name": "Launch localhost",
+        "name": "XXXX",
         "url": "http://localhost:3000",
-        "webRoot": "${workspaceFolder}"
+        "webRoot": "${workspaceFolder}",
+        "pathMappings": [
+          {
+            "url": "file:///home/rus/Escritorio/TRABAJO/employeelog/clockify_io/employeelog/src",
+            "path": "${workspaceFolder}/src"
+          }
+        ]
       }
-
-       
     ]
   }

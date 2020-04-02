@@ -2,29 +2,31 @@ import React from 'react';
 import './Custom_styles/style_one.css'
 import { Bar } from 'react-chartjs-2';
 
+
 class Info extends React.Component {
     constructor(props) {
         super(props);
         let currentDate = new Date();
-        let currentYear = currentDate.getFullYear();
+        this.currentYear = currentDate.getFullYear();
         let currentMonth = currentDate.getMonth();
         currentMonth = currentMonth + 1;
         this.days = [];
         this.HoursperDay = [];
         this.logResponse = [];
-        this.users = [];
         this.keysDate = [];
         this.state = {
+            name: "Not selected",
             usersData: "",
             log: "",
             booleanArray:[],
-            startYear: currentYear,
+            startYear: this.currentYear,
             startMonth: currentMonth,
             selectedUser: "",
             workspace: "",
             newKey: "XWor3IxeV2M9g/mQ",
             goodKey: "",
             id: "",
+            users:[],
             data: {
                 labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
                 datasets: [
@@ -79,7 +81,7 @@ class Info extends React.Component {
         this.getUsers = (newKey) => {
             //New request clear the old data (refresh)
             this.logResponse = [];
-            this.users = [];
+            this.setState({users :[]});
             let url = 'https://api.clockify.me/api/v1/workspaces/5c334808b079874ebdd7c345/users';
             var xhttp = new XMLHttpRequest();
 
@@ -105,11 +107,11 @@ class Info extends React.Component {
                 }
                 else {
                     this.setState({ goodKey: "" })
-                    this.users = [];
                     for (const user of response) {
                         if (user.memberships[0].membershipStatus === "ACTIVE") {
-                            this.users.push({ "name": user.name, "id": user.id, "workspace": user.activeWorkspace });
+                            this.state.users.push({ "name": user.name, "id": user.id, "workspace": user.activeWorkspace, classTr: "bg-white"} );
                         }
+                   
                     }
                    
                     this.fetchUsers();
@@ -117,36 +119,35 @@ class Info extends React.Component {
             }
         }
 
-  
         this.fetchUsers = () => {
-                
-            let i =0;
+           let i = 0
             this.setState({
-                usersData: this.users.map((item) => {
+                
+                usersData: this.state.users.map((item) => {
+                   
                     return (
-                        <tr key={item.id} style={{ cursor: "pointer" }} >
+                        <tr className={this.state.users[i++].classTr} key={item.id} style={{ cursor: "pointer" }} onClick={() => this.showCurrent(item.workspace, item.id, item.name)} >
                             <td className="">{item.name}  </td>
                             <td className="">{item.id}  </td>
                             <td className="">{item.workspace}  </td>
-                            <td><label for={i}>Select </label><input className="ml-2" type="radio" id={i++} onClick={(e) => this.showCurrent(e,item.workspace, item.id)}  ></input></td>
-                         
                         </tr>
                     )
                 })
             })
         }
-        this.showCurrent = (event, workspace, id) => {
+
+        this.showCurrent = ( workspace, id, name) => {
             
-            let id_element = event.target.id;
-            for (let x = 0; x < this.users.length; x++) {
-                if (id_element ==x) {
-                    document.getElementById(x).checked=true;
+            for (let i =0;i< this.state.users.length;i++) {
+                if (name === this.state.users[i].name) {
+                   this.state.users[i].classTr = "bg-primary";
                 }
                 else{
-                    document.getElementById(x).checked=false;
+                    this.state.users[i].classTr = "bg-white";
                 }
-                
             }
+            this.fetchUsers();
+            this.setState({name:name});
             this.setState({ selectedUser: id })
             this.setState({ workspace: workspace })
         }
@@ -162,13 +163,10 @@ class Info extends React.Component {
                 let startH, endH;
                 let user;
                 let duration = "";
+                let firstTurn = 0;
+                let secondTurn = 0;
 
-                for (let j = 0; j < this.users.length; j++) {
-                    if (this.users[j].id === this.logResponse[x][0]["userId"]) {
-                        user = this.users[j].name;
-                        break;
-                    }
-                }
+                
 
                 for (let z = this.logResponse[x].length - 1; z >= 0; z--) {// ----> LOOP  OF  T A S K S
                     let reg = []
@@ -186,7 +184,7 @@ class Info extends React.Component {
                     }
                     /* @@@@@@@@@@@@@@@@-- ADDING REGISTER WITH GOOD DATA --@@@@@@@@@@@@@ */
 
-                    reg = [startDate, startH, endH, duration, user];
+                    reg = [startDate, startH, endH,firstTurn, secondTurn, duration];
                     if (startDate !== newStartDate) {
                         newStartDate = startDate; //New date as index
                         this.LOGS[0][newStartDate] = []; //CREATING NEW START DATE ARRAY
@@ -208,11 +206,7 @@ class Info extends React.Component {
         this.getDuration = () => {
             this.HoursperDay = []
             let hour = 0, min = 0, sec = 0;
-            let currentDate = new Date();
-            let currentYear = currentDate.getFullYear();
-            let currentMonth = currentDate.getMonth();
-            currentMonth = currentMonth + 1;
-            let month_length = new Date(currentYear, currentMonth, 0).getDate();
+            let month_length = new Date(this.year.value, this.select.value, 0).getDate();
             for (let day = 1; day <= month_length; day++) {
                 let match = 0;
                 for (let j = 0; j < this.keyDates.length; j++) {
@@ -224,10 +218,21 @@ class Info extends React.Component {
                         min = 0;
                         sec = 0;
                         let date = this.keyDates[j];
-
+                        this.endH = 0;
+                        this.endTurn = false;
                         for (let index = 0; index < this.LOGS[0][date].length; index++) { //number of tasks in this day
+                            
                             let auxh = 0, auxm = 0, auxs = 0;
-                            let duration = this.LOGS[0][date][index][3];
+                            let duration = this.LOGS[0][date][index][5];
+                            let startHour = this.LOGS[0][date][index][1]
+                            let endHour = this.LOGS[0][date][index][2]
+                            let startHourDateFormat= startHour;
+                            let endHourDateFormat= endHour;
+                            startHour = parseFloat(startHour.replace(":", ".").slice(0, 5))
+                            endHour = parseFloat(endHour.replace(":", ".").slice(0, 5))
+                            if (index ===0) {
+                                this.endH = endHour;
+                            }
                             let aux_char = "";
                             for (let s = 0; s < duration.length; s++) {
                                 let character = duration.charAt(s);
@@ -257,16 +262,37 @@ class Info extends React.Component {
                             hour += parseInt(auxh);
                             min += parseInt(auxm);
                             sec += parseInt(auxs);
+                            ///////////////////////////////////////
+                            
+                            if (this.endTurn === false) {
+                                if ((startHour - this.endH)<1) {
+                                    this.endH = endHour;
+                                    this.LOGS[0][date][0][2] =endHourDateFormat
+                                }
+                                else{
+                                    this.endTurn = true;
+                                }
+                                
+                                
+                            }
+                            else{
+                                this.LOGS[0][date][0][3] = startHourDateFormat
+                                this.LOGS[0][date][0][4] = endHourDateFormat 
+                            }
                         }
                         let d = new Date();
                         d.setHours(hour);
                         d.setMinutes(min);
-                        d.setSeconds(sec)
+                        d.setSeconds(sec);
+                        
                         let duration = d.toString()
-                        let goodFormat = duration.slice(15, 24)
-                        this.LOGS[0][date][0][3] = duration.slice(15, 24);
-                        goodFormat = goodFormat.replace(":", ".")
-                        this.HoursperDay.push(goodFormat.slice(1, 6).trim())
+                        let numberFormat = duration.slice(15, 24)
+                        this.LOGS[0][date][0][5] = duration.slice(15, 24);
+                        
+                        numberFormat =numberFormat.replace(":", ".")
+                        this.HoursperDay.push(numberFormat.slice(1, 6).trim())
+                        
+                        
 
                         break;
                     }
@@ -276,38 +302,67 @@ class Info extends React.Component {
                 }
             }
 
-            this.chartInfo(currentYear, currentMonth);
+            this.chartInfo();
             this.showLogs();
         }
 
         this.showLogs = () => {
             this.setState({
                 log: this.keyDates.map((date) => {
-                    let last = this.LOGS[0][date].length - 1;
+                 
                     return (
                         <tr className="row100 body" key={date} >
                             <td className="cell100 column1">{this.LOGS[0][date][0][0]}</td>
                             <td className="cell100 column2">{this.LOGS[0][date][0][1]}</td>
-                            <td className="cell100 column3">{this.LOGS[0][date][last][2]}</td>
+                            <td className="cell100 column3">{this.LOGS[0][date][0][2]}</td>
                             <td className="cell100 column4">{this.LOGS[0][date][0][3]}</td>
                             <td className="cell100 column4">{this.LOGS[0][date][0][4]}</td>
+                            <td className="cell100 column4">{this.LOGS[0][date][0][5]}</td>
+                          
                         </tr>
                     )
                 })
             })
         }
-
+        
         this.printData = () => {
-
-            let newWin = window.open("");
-            newWin.document.write(this.div.innerHTML);
+            let style='<style>body{font-family:sans-serif; font-size: 0.9em;}\
+            div table {\
+                border-collapse: collapse;\
+                width: 100%;\
+                font-size: 0.9em;\
+              }\
+              \
+              div table td, div table th {\
+                border: 1px solid #ddd;\
+                padding: 8px;\
+              }\
+              \
+              div table tr:nth-child(even){background-color: #c3c3c3;}\
+              \
+              div table tr:hover {background-color: #ddd;}\
+              \
+              div table th {\
+                padding-top: 12px;\
+                padding-bottom: 12px;\
+                text-align: left;\
+                background-color: #4CAF50;\
+                color: white;\
+              }</style>';
+            let newWin = window.open();
+            newWin.document.write('<head>'+style+'</head>')
+            newWin.document.write("<body>\
+           <section class='content'><h2>Printing Report</h2>")
+            newWin.document.write('<p>Date Report:'+this.year.value+'/'+this.select.value+',  Company:<i>Comerline</i></p>\
+            <h3>Worker : '+this.NameUser+'</h3><div style="width:50%;">'+this.div.innerHTML+'</div></section></body>');
             newWin.print();
             newWin.close();
+          
         }
 
-        this.chartInfo = (y, m) => {
+        this.chartInfo = () => {
 
-            let days_length = new Date(y, m, 0).getDate();
+            let days_length = new Date(this.year.value, this.select.value, 0).getDate();
             this.days = [];
             for (let day = 1; day <= days_length; day++) {
                 this.days.push(day);
@@ -335,10 +390,11 @@ class Info extends React.Component {
         this.filterDate = () => {
             //Values from my Input
             this.getLogs(this.year.value, this.select.value)
-            this.chartInfo(this.year.value, this.select.value)
+            
         }
-    }
 
+    }
+    
     render() {
         return (
             <div >
@@ -395,9 +451,19 @@ class Info extends React.Component {
                                         <option value="11">November</option>
                                         <option value="12">December</option>
                                     </select>
-                                    <input type="text" maxLength="4" placeholder="Year" ref={year => { this.year = year }}></input>
+                                    <select ref={year => { this.year = year }} className="ml-4">
+                                        <option>- Year -</option>
+                                        <option value={this.currentYear} selected>{this.currentYear}</option>
+                                        <option value={this.currentYear-1}>{this.currentYear-1}</option>
+                                        <option value={this.currentYear-2}>{this.currentYear-2}</option>
+                                        <option value={this.currentYear-3}>{this.currentYear-3}</option>
+
+                                    </select>
+                                    
                                     <button className="btn text-white bg-secondary" onClick={this.filterDate}>Search</button>
+                                    <button className="btn bg-primary" style={{marginLeft:"100px"}} onClick={this.printData}>Print table</button>
                                 </p>
+                                <h2>{this.state.name}</h2>
                             </div>
 
                             <div className="card-body table-responsive p-0" ref={div => { this.div = div }} id="printTable">
@@ -405,11 +471,13 @@ class Info extends React.Component {
                                     <thead>
                                         <tr>
                                             <th>Start Date</th>
-                                            <th>Start Hour</th>
-                                            <th>End Hour</th>
+                                            <th>Start 1ºTurn</th>
+                                            <th>End 1ºTurn</th>
+                                            <th>Start 2ºTurn</th>
+                                            <th>End 2ºTurn</th>
                                             <th>Duration</th>
-                                            <th>Worker</th>
-                                            <th><button className="btn bg-primary" onClick={this.printData}>Print table</button></th>
+                                           
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
