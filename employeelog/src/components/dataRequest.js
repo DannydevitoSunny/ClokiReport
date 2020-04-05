@@ -1,6 +1,7 @@
 import React from 'react';
 import './Custom_styles/style_one.css'
 import { Bar } from 'react-chartjs-2';
+import { MyContext } from "./globalConfig.js";
 
 
 class Info extends React.Component {
@@ -15,7 +16,8 @@ class Info extends React.Component {
         this.logResponse = [];
         this.keysDate = [];
         this.state = {
-            name: "Selected User",
+            display:"none",
+            name: "",
             usersData: "",
             log: "",
             booleanArray:[],
@@ -45,6 +47,7 @@ class Info extends React.Component {
 
 
         }
+        
 
 
         //--------------- M E T H O D S ---------------------------
@@ -74,12 +77,16 @@ class Info extends React.Component {
                     this.logResponse.push(answer);
                     this.generateLogs()
                 }
+                else{
+                    this.setState({log:""})
+                }
             }
 
         }
 
-        this.getUsers = (newKey) => {
+        this.getUsers = () => {
             //New request clear the old data (refresh)
+            this.key = this.currentKey.innerHTML;
             this.logResponse = [];
             this.setState({users :[]});
             let url = 'https://api.clockify.me/api/v1/workspaces/5c334808b079874ebdd7c345/users';
@@ -87,7 +94,7 @@ class Info extends React.Component {
 
             xhttp.open('GET', url, true);
             xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.setRequestHeader("X-Api-Key", newKey);
+            xhttp.setRequestHeader("X-Api-Key", this.key);
             xhttp.send();
 
             xhttp.onload = function () {
@@ -269,13 +276,11 @@ class Info extends React.Component {
                                     this.LOGS[0][date][0][2] =endHourDateFormat
                                 }
                                 else{
+                                    this.LOGS[0][date][0][3] = startHourDateFormat
                                     this.endTurn = true;
                                 }
-                                
-                                
                             }
                             else{
-                                this.LOGS[0][date][0][3] = startHourDateFormat
                                 this.LOGS[0][date][0][4] = endHourDateFormat 
                             }
                         }
@@ -388,6 +393,7 @@ class Info extends React.Component {
         }
 
         this.filterDate = () => {
+            this.setState({display:"block"});
             this.setState({name:this.userName});
             this.getLogs(this.year.value, this.select.value)
             
@@ -397,117 +403,125 @@ class Info extends React.Component {
     
     render() {
         return (
-            <div >
-                {/*@@@@@@@@@@@@@@@@@@@@@@@@@@ T A B L E   U S E R S  */}
-                <div className="row">
-                    <div className="col-12">
-                        <div className="card">
+            <MyContext.Consumer>
+                {(value) => (
+                    <div >
+
+
+                        {/*@@@@@@@@@@@@@@@@@@@@@@@@@@ T A B L E   U S E R S  */}
+                        <div className="row">
+                            <div className="col-12">
+                                <div className="card">
+                                    <div className="card-header">
+
+                                        <button className="btn bg-primary" onClick={() => this.getUsers()} >Get Report </button>
+                                        <h3 className="">New key : <span className="border-bottom p-2 text-primary border-primary" ref={currentKey=>(this.currentKey=currentKey)}>{value.state.ApiKey}</span></h3>
+                                        <p className="text-danger">{this.state.goodKey}</p>
+                                        <h3 className="card-title">Table Users</h3>
+                                    </div>
+
+                                    <div className="card-body table-responsive p-0">
+                                        <table className="table table-hover text-nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Id</th>
+                                                    <th>Workspace Id</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {this.state.usersData}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        {/* @@@@@@@@@@@@@@@@@@@@@@@@@@ T A B L E   L O G S  */}
+                        <div className="row">
+                            <div className="col-12">
+                                <div className="card">
+                                    <div className="card-header">
+                                        <h3 className="card-title">Select Date: </h3>
+                                        <p>
+                                            <select className="ml-4" ref={select => { this.select = select }}>
+                                                <option>- Month -</option>
+                                                <option value="01">January</option>
+                                                <option value="02">Febuary</option>
+                                                <option value="03">March</option>
+                                                <option value="04">April</option>
+                                                <option value="05">May</option>
+                                                <option value="06">June</option>
+                                                <option value="07">July</option>
+                                                <option value="08">August</option>
+                                                <option value="09">September</option>
+                                                <option value="10">October</option>
+                                                <option value="11">November</option>
+                                                <option value="12">December</option>
+                                            </select>
+                                            <select ref={year => { this.year = year }} className="ml-4">
+                                                <option>- Year -</option>
+                                                <option value={this.currentYear} selected>{this.currentYear}</option>
+                                                <option value={this.currentYear - 1}>{this.currentYear - 1}</option>
+                                                <option value={this.currentYear - 2}>{this.currentYear - 2}</option>
+                                                <option value={this.currentYear - 3}>{this.currentYear - 3}</option>
+
+                                            </select>
+
+                                            <button className="btn text-white bg-secondary ml-2" onClick={this.filterDate}>Search</button>
+                                            <button className="btn bg-primary" style={{ marginLeft: "100px" }} onClick={this.printData}>Print table</button>
+                                        </p>
+                                        <h2 className="bg-primary rounded p-1" style={{ display: this.state.display, textAlign: "center" }}>{this.state.name}</h2>
+                                    </div>
+
+                                    <div className="card-body table-responsive p-0" ref={div => { this.div = div }} id="printTable">
+                                        <table className="table table-head-fixed text-nowrap" >
+                                            <thead>
+                                                <tr>
+                                                    <th>Start Date</th>
+                                                    <th>Start 1ºTurn</th>
+                                                    <th>End 1ºTurn</th>
+                                                    <th>Start 2ºTurn</th>
+                                                    <th>End 2ºTurn</th>
+                                                    <th>Duration</th>
+
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {this.state.log}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        {/* @@@@@@@@@@@@@@@@@@@ G E N E R A T E   C H A R T @@@@@@@  */}
+                        <div className="card card-primary">
                             <div className="card-header">
+                                <h3 className="card-title">March</h3>
 
-                                <button className="btn bg-primary" onClick={() => this.getUsers(this.key)} >Get Report </button>
-                                <h3 className="">New key : <span className="border-bottom p-2 text-primary border-primary">{(this.props.param1 !== "") ? this.key = this.props.param1 : this.key = "XWor3IxeV2M9g/mQ"}</span></h3>
-                                <p className="text-danger">{this.state.goodKey}</p>
-                                <h3 className="card-title">Table Users</h3>
+                                <div className="card-tools">
+                                    <button type="button" className="btn btn-tool" data-card-widget="collapse"><i className="fas fa-minus"></i>
+                                    </button>
+                                    <button type="button" className="btn btn-tool" data-card-widget="remove"><i className="fas fa-times"></i></button>
+                                </div>
                             </div>
-
-                            <div className="card-body table-responsive p-0">
-                                <table className="table table-hover text-nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Id</th>
-                                            <th>Workspace Id</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {this.state.usersData}
-                                    </tbody>
-                                </table>
+                            <div className="card-body">
+                                <div className="chart">
+                                    <Bar data={this.state.data} />
+                                </div>
                             </div>
 
                         </div>
+                    </div >
+                )}
 
-                    </div>
-                </div>
-                {/* @@@@@@@@@@@@@@@@@@@@@@@@@@ T A B L E   L O G S  */}
-                <div className="row">
-                    <div className="col-12">
-                        <div className="card">
-                            <div className="card-header">
-                                <h3 className="card-title">Select Date: </h3>
-                                <p>
-                                    <select className="ml-4" ref={select => { this.select = select }}>
-                                        <option>- Month -</option>
-                                        <option value="01">January</option>
-                                        <option value="02">Febuary</option>
-                                        <option value="03">March</option>
-                                        <option value="04">April</option>
-                                        <option value="05">May</option>
-                                        <option value="06">June</option>
-                                        <option value="07">July</option>
-                                        <option value="08">August</option>
-                                        <option value="09">September</option>
-                                        <option value="10">October</option>
-                                        <option value="11">November</option>
-                                        <option value="12">December</option>
-                                    </select>
-                                    <select ref={year => { this.year = year }} className="ml-4">
-                                        <option>- Year -</option>
-                                        <option value={this.currentYear} selected>{this.currentYear}</option>
-                                        <option value={this.currentYear-1}>{this.currentYear-1}</option>
-                                        <option value={this.currentYear-2}>{this.currentYear-2}</option>
-                                        <option value={this.currentYear-3}>{this.currentYear-3}</option>
-
-                                    </select>
-                                    
-                                    <button className="btn text-white bg-secondary ml-2" onClick={this.filterDate}>Search</button>
-                                    <button className="btn bg-primary" style={{marginLeft:"100px"}} onClick={this.printData}>Print table</button>
-                                </p>
-                                <h2 className="bg-primary rounded w-25 p-1 pl-4">{this.state.name}</h2>
-                            </div>
-
-                            <div className="card-body table-responsive p-0" ref={div => { this.div = div }} id="printTable">
-                                <table className="table table-head-fixed text-nowrap" >
-                                    <thead>
-                                        <tr>
-                                            <th>Start Date</th>
-                                            <th>Start 1ºTurn</th>
-                                            <th>End 1ºTurn</th>
-                                            <th>Start 2ºTurn</th>
-                                            <th>End 2ºTurn</th>
-                                            <th>Duration</th>
-                                           
-                                            
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {this.state.log}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                {/* @@@@@@@@@@@@@@@@@@@ G E N E R A T E   C H A R T @@@@@@@  */}
-                <div className="card card-primary">
-                    <div className="card-header">
-                        <h3 className="card-title">March</h3>
-
-                        <div className="card-tools">
-                            <button type="button" className="btn btn-tool" data-card-widget="collapse"><i className="fas fa-minus"></i>
-                            </button>
-                            <button type="button" className="btn btn-tool" data-card-widget="remove"><i className="fas fa-times"></i></button>
-                        </div>
-                    </div>
-                    <div className="card-body">
-                        <div className="chart">
-                            <Bar data={this.state.data} />
-                        </div>
-                    </div>
-
-                </div>
-            </div >
+            </MyContext.Consumer>
+            
 
         );
     }
