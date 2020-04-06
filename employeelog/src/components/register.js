@@ -1,33 +1,18 @@
 import React from 'react';
 import { Component } from 'react';
 import './Custom_styles/reg_style.css';
-import axios from 'axios';
 
 
 class Register extends Component {
     constructor() {
         super()
 
-        this.submit=(e)=>{
-  
-            console.log(e.target.value)
-            axios({
-                method: 'post', 
-                url: './register.php',
-                headers: { "content-type": "application/x-www-form-urlencoded" },
-              })
-              .then((data)=>{
-                  let obj = JSON.stringify(data);
-                  console.log(data);
-              })
-        }
-
     }
     render() {
         return (
 
             <div className="form-style-5" style={{fontFamily:"sans-serif"}}>
-            <form onSubmit={this.submit} method="POST">
+            <form action="http://localhost/PHP/register.php" method="POST">
             <h2 className="text-primary">Welcome to ClokiReport</h2><br></br>
                 <fieldset>
                     
@@ -42,10 +27,10 @@ class Register extends Component {
                 </fieldset>
                 <fieldset>
                     <legend><span className="number">2</span> Additional Info</legend>
-                    <textarea name="field3" placeholder="About Your Business"></textarea>
+                    <textarea name="extra" placeholder="About Your Business"></textarea>
                 </fieldset>
                 <a href="register.php">HHH</a>
-                <input type="button" onClick={(e)=>this.submit(e)} value="Apply" name="submit" ></input>
+                <input type="submit" value="Apply" name="submit" ></input>
             </form>
         </div >
         );
