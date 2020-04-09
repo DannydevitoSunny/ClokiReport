@@ -39,15 +39,45 @@ class ApiKey extends React.Component {
                   </div>
                 </div>
                 <div className="card-body">
-                  <input type="text" ref={myKey => (this.myKey = myKey)} placeholder="API_KEY"></input>
+                  <input type="text" ref={myKey => (this.myKey = myKey)} placeholder="API_KEY"></input><br></br>
                 </div>
-                <div className="card-footer">
-                  <input type="button" className="btn bg-primary" onClick={()=>{value.setKey(this.myKey.value)}} value="Submit"></input>
-                </div>
+
               </div>
+
+              <div className="card">
+                <div className="card-header">
+                  <h3 className="card-title">Language: </h3>
+
+                  <div className="card-tools">
+                    <button type="button" className="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                      <i className="fas fa-minus"></i></button>
+
+                  </div>
+                </div>
+                <div className="card-body">
+                <select>
+                    <option disabled selected>Select</option>
+                    <option>IN</option>
+                    <option>ES</option>
+                  </select>
+                </div>
+
+              </div>
+
+              {/* @@@@@@@@@@@@@@@@@@ S A V E  C H A N GE  @@@@@@@@@@@@@@@@@@@@@@ */}
+              <div className="card" style={{textAlign:"center"}}>
+                
+                  <h3 className="card-title text-primary mt-2">Save the new configuration</h3>
+               
+                <div className="card-body" style={{textAlign:"center"}}>
+                  <input type="button" className="btn bg-primary" onClick={()=>{value.setKey(this.myKey.value)}} value="Save"></input>
+                </div>
+
+              </div>
+              
             </section>
           </div>
-          
+           
        )}
       </MyContext.Consumer>
 

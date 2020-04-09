@@ -51,7 +51,7 @@ class RouteSS extends React.Component {
 
                                             </div>
                                             <div className="info">
-                                                <a href="#" className="d-block">Alexander Pierce</a>
+                                                 <a href="#" className="d-block">Welcome {value.state.UserName}</a>
                                             </div>
                                         </div>
                                         <nav className="mt-2">
@@ -90,7 +90,7 @@ class RouteSS extends React.Component {
                                                 <li className="nav-item">
                                                     <a href="" className="nav-link">
                                                         <i className="fas fa-user fa-lg"></i>
-                                                        <p className="ml-1">Log out</p>
+                                                        <p className="ml-1" onClick={(value.closeSession)}>Log out</p>
                                                     </a>
                                                 </li>
 
