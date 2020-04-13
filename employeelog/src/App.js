@@ -19,7 +19,7 @@ class App extends Component {
   }
   render() {
     return (
-      <MyProvider>{/* Inside My provider all components can access tha global Data */}
+      <MyProvider>{/* Inside My provider all components can access the global Data */}
         <div>
           {(this.state.logIn === false) ? <Login login={this.changeState} /> : <RouteSS />}
         </div>

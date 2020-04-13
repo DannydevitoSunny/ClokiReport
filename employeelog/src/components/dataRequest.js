@@ -3,7 +3,6 @@ import './Custom_styles/style_one.css'
 import { Bar } from 'react-chartjs-2';
 import { MyContext } from "./globalConfig.js";
 
-
 class Info extends React.Component {
     constructor(props) {
         super(props);
@@ -16,11 +15,11 @@ class Info extends React.Component {
         this.logResponse = [];
         this.keysDate = [];
         this.state = {
-            display:"none",
+            display: "none",
             name: "",
             usersData: "",
             log: "",
-            booleanArray:[],
+            booleanArray: [],
             startYear: this.currentYear,
             startMonth: currentMonth,
             selectedUser: "",
@@ -28,7 +27,7 @@ class Info extends React.Component {
             newKey: "XWor3IxeV2M9g/mQ",
             goodKey: "",
             id: "",
-            users:[],
+            users: [],
             data: {
                 labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
                 datasets: [
@@ -47,7 +46,7 @@ class Info extends React.Component {
 
 
         }
-        
+
 
 
         //--------------- M E T H O D S ---------------------------
@@ -59,6 +58,7 @@ class Info extends React.Component {
             console.clear();
             var xhttp = new XMLHttpRequest();
             let url = 'https://api.clockify.me/api/v1/workspaces/' + this.state.workspace + '/user/' + this.state.selectedUser + '/time-entries?start=' + y + '-' + m + '-01T00:00:14Z&end=' + y + '-' + m + '-' + days_length + 'T23:59:14Z&page-size=2500';
+
             xhttp.open('GET', url, true);
             xhttp.setRequestHeader("Content-type", "application/json");
 
@@ -77,8 +77,8 @@ class Info extends React.Component {
                     this.logResponse.push(answer);
                     this.generateLogs()
                 }
-                else{
-                    this.setState({log:""})
+                else {
+                    this.setState({ log: "" })
                 }
             }
 
@@ -86,9 +86,9 @@ class Info extends React.Component {
 
         this.getUsers = () => {
             //New request clear the old data (refresh)
-            this.key = this.currentKey.innerHTML;
+            this.key = this.currentKey;
             this.logResponse = [];
-            this.setState({users :[]});
+            this.setState({ users: [] });
             let url = 'https://api.clockify.me/api/v1/workspaces/5c334808b079874ebdd7c345/users';
             var xhttp = new XMLHttpRequest();
 
@@ -110,28 +110,28 @@ class Info extends React.Component {
             }
             let call = (response) => {
                 if (response === "badkey") {
-                    this.setState({ goodKey: "The key is wrong, try again!" })
+                    this.setState({ goodKey: "There is no key or the key is wrong. Please try again" })
                 }
                 else {
                     this.setState({ goodKey: "" })
                     for (const user of response) {
                         if (user.memberships[0].membershipStatus === "ACTIVE") {
-                            this.state.users.push({ "name": user.name, "id": user.id, "workspace": user.activeWorkspace, classTr: "bg-white"} );
+                            this.state.users.push({ "name": user.name, "id": user.id, "workspace": user.activeWorkspace, classTr: "bg-white" });
                         }
-                   
+
                     }
-                   
+
                     this.fetchUsers();
                 }
             }
         }
 
         this.fetchUsers = () => {
-           let i = 0
+            let i = 0
             this.setState({
-                
+
                 usersData: this.state.users.map((item) => {
-                   
+
                     return (
                         <tr className={this.state.users[i++].classTr} key={item.id} style={{ cursor: "pointer" }} onClick={() => this.showCurrent(item.workspace, item.id, item.name)} >
                             <td className="">{item.name}  </td>
@@ -143,13 +143,13 @@ class Info extends React.Component {
             })
         }
 
-        this.showCurrent = ( workspace, id, name) => {
+        this.showCurrent = (workspace, id, name) => {
             this.userName = name
-            for (let i =0;i< this.state.users.length;i++) {
+            for (let i = 0; i < this.state.users.length; i++) {
                 if (name === this.state.users[i].name) {
-                   this.state.users[i].classTr = "bg-primary";
+                    this.state.users[i].classTr = "bg-primary";
                 }
-                else{
+                else {
                     this.state.users[i].classTr = "bg-white";
                 }
             }
@@ -167,30 +167,51 @@ class Info extends React.Component {
                 let newStartDate = "/"
                 let startDate = "";
                 let startH, endH;
-                let user;
                 let duration = "";
                 let firstTurn = 0;
                 let secondTurn = 0;
+                let numTasks = 1;
 
-                
 
                 for (let z = this.logResponse[x].length - 1; z >= 0; z--) {// ----> LOOP  OF  T A S K S
-                    let reg = []
-                    startDate = this.logResponse[x][z]["timeInterval"]["start"].substring(0, 10);
-                    startH = this.logResponse[x][z]["timeInterval"]["start"].substring(11, 19);
+                    let reg = [] //new task
+                    //local TIME pretty format
+                    let localDate = new Date(this.logResponse[x][z]["timeInterval"]["start"]);
+                    let year = localDate.getFullYear();
+                    let mounth = localDate.getMonth() + 1;
+                    (mounth < 10) ? (mounth = "0" + mounth) : mounth = mounth;
+                    let day = localDate.getDate()
+                    day < 10 ? (day = "0" + day) : day = day;
+                    let h = localDate.getHours();
+                    h < 10 ? (h = "0" + h) : h = h;
+                    let m = localDate.getMinutes();
+                    m < 10 ? (m = "0" + m) : m = m;
+                    let s = localDate.getSeconds();
+                    s < 10 ? (s = "0" + s) : s = s;
+
+                    startDate = year + "/" + mounth + "/" + day;
+                    startH = h + ":" + m + ":" + s;
                     //If is null, that is mean the user is working on it
                     if (this.logResponse[x][z]["timeInterval"]["end"] == null) {
                         endH = "UNKNOWN"
                         duration = "UNKNOWN"
                     }
                     else {
-                        endH = this.logResponse[x][z]["timeInterval"]["end"].substring(11, 19);
+                        let localDate = new Date(this.logResponse[x][z]["timeInterval"]["end"]);
+                        let h = localDate.getHours();
+                        h < 10 ? (h = "0" + h) : h = h;
+                        let m = localDate.getMinutes();
+                        m < 10 ? (m = "0" + m) : m = m;
+                        let s = localDate.getSeconds();
+                        s < 10 ? (s = "0" + s) : s = s;
+                        endH = h + ":" + m + ":" + s;
                         duration = this.logResponse[x][z]["timeInterval"]["duration"];
 
                     }
                     /* @@@@@@@@@@@@@@@@-- ADDING REGISTER WITH GOOD DATA --@@@@@@@@@@@@@ */
 
-                    reg = [startDate, startH, endH,firstTurn, secondTurn, duration];
+                    secondTurn = endH;
+                    reg = [startDate, startH, endH, firstTurn, secondTurn, duration, numTasks];
                     if (startDate !== newStartDate) {
                         newStartDate = startDate; //New date as index
                         this.LOGS[0][newStartDate] = []; //CREATING NEW START DATE ARRAY
@@ -227,16 +248,16 @@ class Info extends React.Component {
                         this.endH = 0;
                         this.endTurn = false;
                         for (let index = 0; index < this.LOGS[0][date].length; index++) { //number of tasks in this day
-                            
+
                             let auxh = 0, auxm = 0, auxs = 0;
                             let duration = this.LOGS[0][date][index][5];
                             let startHour = this.LOGS[0][date][index][1]
                             let endHour = this.LOGS[0][date][index][2]
-                            let startHourDateFormat= startHour;
-                            let endHourDateFormat= endHour;
+                            let startHourDateFormat = startHour;
+                            let endHourDateFormat = endHour;
                             startHour = parseFloat(startHour.replace(":", ".").slice(0, 5))
                             endHour = parseFloat(endHour.replace(":", ".").slice(0, 5))
-                            if (index ===0) {
+                            if (index === 0) {
                                 this.endH = endHour;
                             }
                             let aux_char = "";
@@ -265,38 +286,39 @@ class Info extends React.Component {
                                 aux_char += character;
 
                             }
+
                             hour += parseInt(auxh);
                             min += parseInt(auxm);
                             sec += parseInt(auxs);
                             ///////////////////////////////////////
-                            
+
                             if (this.endTurn === false) {
-                                if ((startHour - this.endH)<1) {
+                                if ((startHour - this.endH) < 1) {
                                     this.endH = endHour;
-                                    this.LOGS[0][date][0][2] =endHourDateFormat
+                                    this.LOGS[0][date][0][2] = endHourDateFormat //End FIRST turn
                                 }
-                                else{
-                                    this.LOGS[0][date][0][3] = startHourDateFormat
+                                else {
+                                    this.LOGS[0][date][0][3] = startHourDateFormat //Start SECOND turn
+                                    this.LOGS[0][date][0][6] = 2
                                     this.endTurn = true;
                                 }
                             }
-                            else{
-                                this.LOGS[0][date][0][4] = endHourDateFormat 
-                            }
+
                         }
+
                         let d = new Date();
                         d.setHours(hour);
                         d.setMinutes(min);
                         d.setSeconds(sec);
-                        
+
                         let duration = d.toString()
                         let numberFormat = duration.slice(15, 24)
                         this.LOGS[0][date][0][5] = duration.slice(15, 24);
-                        
-                        numberFormat =numberFormat.replace(":", ".")
+
+                        numberFormat = numberFormat.replace(":", ".")
                         this.HoursperDay.push(numberFormat.slice(1, 6).trim())
-                        
-                        
+
+
 
                         break;
                     }
@@ -313,24 +335,25 @@ class Info extends React.Component {
         this.showLogs = () => {
             this.setState({
                 log: this.keyDates.map((date) => {
-                 
+                    let lastTask = this.LOGS[0][date].length - 1;
+                    let b = 2;
                     return (
                         <tr className="row100 body" key={date} >
                             <td className="cell100 column1">{this.LOGS[0][date][0][0]}</td>
                             <td className="cell100 column2">{this.LOGS[0][date][0][1]}</td>
                             <td className="cell100 column3">{this.LOGS[0][date][0][2]}</td>
                             <td className="cell100 column4">{this.LOGS[0][date][0][3]}</td>
-                            <td className="cell100 column4">{this.LOGS[0][date][0][4]}</td>
+                            <td className="cell100 column4">{(this.LOGS[0][date][0][6] == 2) ? (this.LOGS[0][date][lastTask][4]) : ("0")}</td>
                             <td className="cell100 column4">{this.LOGS[0][date][0][5]}</td>
-                          
+
                         </tr>
                     )
                 })
             })
         }
-        
+
         this.printData = () => {
-            let style='<style>body{font-family:sans-serif; font-size: 0.9em;}\
+            let style = '<style>body{font-family:sans-serif; font-size: 0.9em;}\
             div table {\
                 text-align:center;\
                 border-collapse: collapse;\
@@ -355,14 +378,14 @@ class Info extends React.Component {
                 color: white;\
               }</style>';
             let newWin = window.open();
-            newWin.document.write('<head>'+style+'</head>')
+            newWin.document.write('<head>' + style + '</head>')
             newWin.document.write("<body>\
            <section class='content'><h2 style='color:#3366ff'>Printing Report</h2>")
-            newWin.document.write('<p><b>Date Report:</b>'+this.year.value+'/'+this.select.value+',  <b>Company:</b><i>Comerline</i></p>\
-            <h3>Worker : '+this.state.name+'</h3><div style="width:50%;">'+this.div.innerHTML+'</div></section></body>');
+            newWin.document.write('<p><b>Date Report:</b>' + this.year.value + '/' + this.select.value + ',  <b>Company:</b><i>Comerline</i></p>\
+            <h3>Worker : '+ this.state.name + '</h3><div style="width:50%;">' + this.div.innerHTML + '</div></section></body>');
             newWin.print();
-           
-          
+
+
         }
 
         this.chartInfo = () => {
@@ -393,14 +416,14 @@ class Info extends React.Component {
         }
 
         this.filterDate = () => {
-            this.setState({display:"block"});
-            this.setState({name:this.userName});
+            this.setState({ display: "block" });
+            this.setState({ name: this.userName });
             this.getLogs(this.year.value, this.select.value)
-            
+
         }
 
     }
-    
+
     render() {
         return (
             <MyContext.Consumer>
@@ -414,10 +437,10 @@ class Info extends React.Component {
                                 <div className="card">
                                     <div className="card-header">
 
-                                        <button className="btn bg-primary" onClick={() => this.getUsers()} >Get Report </button>
-                                        <h3 className="">New key : <span className="border-bottom p-2 text-primary border-primary" ref={currentKey=>(this.currentKey=currentKey)}>{value.state.ApiKey}</span></h3>
+                                        <span style={{ display: "none" }}>{this.currentKey = value.state.ApiKey}</span>
+
                                         <p className="text-danger">{this.state.goodKey}</p>
-                                        <h3 className="card-title">Table Users</h3>
+                                        <h3 className="card-title">Table Users<button className=" ml-2 btn bg-primary" onClick={this.getUsers}>Get Report</button> </h3>
                                     </div>
 
                                     <div className="card-body table-responsive p-0">
@@ -444,9 +467,10 @@ class Info extends React.Component {
                             <div className="col-12">
                                 <div className="card">
                                     <div className="card-header">
-                                        <h3 className="card-title">Select Date: </h3>
-                                        <p>
-                                            <select className="ml-4" ref={select => { this.select = select }}>
+
+
+                                        <div className="row">
+                                            <select className="col-sm" ref={select => { this.select = select }}>
                                                 <option>- Month -</option>
                                                 <option value="01">January</option>
                                                 <option value="02">Febuary</option>
@@ -461,7 +485,7 @@ class Info extends React.Component {
                                                 <option value="11">November</option>
                                                 <option value="12">December</option>
                                             </select>
-                                            <select ref={year => { this.year = year }} className="ml-4">
+                                            <select ref={year => { this.year = year }} className="col-sm ">
                                                 <option>- Year -</option>
                                                 <option value={this.currentYear} selected>{this.currentYear}</option>
                                                 <option value={this.currentYear - 1}>{this.currentYear - 1}</option>
@@ -470,10 +494,11 @@ class Info extends React.Component {
 
                                             </select>
 
-                                            <button className="btn text-white bg-secondary ml-2" onClick={this.filterDate}>Search</button>
-                                            <button className="btn bg-primary" style={{ marginLeft: "100px" }} onClick={this.printData}>Print table</button>
-                                        </p>
-                                        <h2 className="bg-primary rounded p-1" style={{ display: this.state.display, textAlign: "center" }}>{this.state.name}</h2>
+                                            <button className="col-sm btn bg-primary" onClick={this.filterDate}>Search</button>
+                                            <button className="col-sm btn bg-secondary text-white" onClick={this.printData}>Print table</button>
+                                        </div>
+
+                                        <h2 className=" mt-2" style={{ display: this.state.display, textAlign: "center" }}>{this.state.name}</h2>
                                     </div>
 
                                     <div className="card-body table-responsive p-0" ref={div => { this.div = div }} id="printTable">
@@ -521,7 +546,7 @@ class Info extends React.Component {
                 )}
 
             </MyContext.Consumer>
-            
+
 
         );
     }

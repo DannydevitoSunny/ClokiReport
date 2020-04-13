@@ -12,7 +12,7 @@ class RouteSS extends React.Component {
         super(props)
 
         this.fun = () => {
-            this.body.className = "hold-transition sidebar-collapse"
+            document.getElementById("mainBody").className = "hold-transition sidebar-collapse"
         }
         this.state = {
             key: ""
@@ -26,8 +26,7 @@ class RouteSS extends React.Component {
         return (
             <MyContext.Consumer>
                 {(value => ( 
-                    <body ref={mybody => { this.body = mybody }} className="hold-transition sidebar-mini" style={{ fontFamily: "'Arial', sans-serif" }}>
-                        <noscript>You need to enable JavaScript to run this app.</noscript>
+                    <div>
 
 
                         <div >
@@ -65,33 +64,33 @@ class RouteSS extends React.Component {
                                                 </li>
                                                 <li className="nav-item">
                                                     <Link to="/">
-                                                        <a href="" className="nav-link ">
-                                                            <i className="fa fa-home fa-lg"></i>
-                                                            <p className="ml-1">Home</p>
-                                                        </a>
+                                                        <span className="nav-link ">
+                                                            <i className="fas fa-home fa-lg"></i>
+                                                            <p className="ml-1 text-white">Home</p>
+                                                        </span>
                                                     </Link>
                                                 </li>
                                                 <li className="nav-item">
                                                     <Link to="/report">
-                                                        <a href="" className="nav-link">
+                                                        <span className="nav-link">
                                                             <i className="fas fa-table fa-lg"></i>
-                                                            <p className="ml-1">Info</p>
-                                                        </a>
+                                                            <p className="ml-2 text-white">Info</p>
+                                                        </span>
                                                     </Link>
                                                 </li>
                                                 <li className="nav-item">
                                                     <Link to="/tweaks">
-                                                        <a href="" className="nav-link">
+                                                        <span className="nav-link">
                                                             <i className="fas fa-cog fa-lg"></i>
-                                                            <p className="ml-1">Configuration</p>
-                                                        </a>
+                                                            <p className="ml-2 text-white">Configuration</p>
+                                                        </span>
                                                     </Link>
                                                 </li>
                                                 <li className="nav-item">
-                                                    <a href="" className="nav-link">
+                                                    <span  className="nav-link">
                                                         <i className="fas fa-user fa-lg"></i>
-                                                        <p className="ml-1" onClick={(value.closeSession)}>Log out</p>
-                                                    </a>
+                                                        <p className="ml-2" onClick={()=>value.closeSession()}>Log out</p>
+                                                    </span>
                                                 </li>
 
 
@@ -134,7 +133,7 @@ class RouteSS extends React.Component {
                         </footer>
 
 
-                    </body>
+                    </div>
                 ))}
             </MyContext.Consumer>
         )

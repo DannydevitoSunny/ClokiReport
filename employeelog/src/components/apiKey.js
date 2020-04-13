@@ -7,7 +7,12 @@ import { MyProvider, MyContext } from "./globalConfig.js";
 class ApiKey extends React.Component {
   constructor(props) {
     super(props);
-    this.myKey = "";
+    this.state={
+      url:"http://localhost/PHP/SetGlobal.php",
+      origin:"conf",
+    }
+
+    this.LocalZone= "Spain";
    
   }
   render() {
@@ -30,7 +35,7 @@ class ApiKey extends React.Component {
 
               <div className="card">
                 <div className="card-header">
-                  <h3 className="card-title">Introduce your Api-Key below here: </h3>
+                  <h3 className="card-title">Current ApKey: <b>{value.state.ApiKey}</b></h3>
 
                   <div className="card-tools">
                     <button type="button" className="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
@@ -39,7 +44,7 @@ class ApiKey extends React.Component {
                   </div>
                 </div>
                 <div className="card-body">
-                  <input type="text" ref={myKey => (this.myKey = myKey)} placeholder="API_KEY"></input><br></br>
+                  <input type="text" ref={mykey => (this.mykey = mykey)} ></input><br></br>
                 </div>
 
               </div>
@@ -55,10 +60,10 @@ class ApiKey extends React.Component {
                   </div>
                 </div>
                 <div className="card-body">
-                <select>
+                <select ref={lang => (this.lang = lang)} >
                     <option disabled selected>Select</option>
-                    <option>IN</option>
-                    <option>ES</option>
+                    <option value="IN">IN</option>
+                    <option value="ES">ES</option>
                   </select>
                 </div>
 
@@ -66,11 +71,16 @@ class ApiKey extends React.Component {
 
               {/* @@@@@@@@@@@@@@@@@@ S A V E  C H A N GE  @@@@@@@@@@@@@@@@@@@@@@ */}
               <div className="card" style={{textAlign:"center"}}>
-                
-                  <h3 className="card-title text-primary mt-2">Save the new configuration</h3>
-               
                 <div className="card-body" style={{textAlign:"center"}}>
-                  <input type="button" className="btn bg-primary" onClick={()=>{value.setKey(this.myKey.value)}} value="Save"></input>
+                  <button className="btn btn-dark text-warning"
+                      onClick={() => {
+                          this.postRequest = "&apikey="+this.mykey.value+"&lang="+this.lang.value+"&localZone="+this.LocalZone+"&id="+value.state.id;
+                          this.data = [this.state.url, this.state.origin, this.postRequest];
+                          value.submit(this.data);
+                      }
+                      }>
+                      Save
+                  </button>
                 </div>
 
               </div>

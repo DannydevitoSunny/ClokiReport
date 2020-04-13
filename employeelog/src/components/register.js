@@ -38,8 +38,9 @@ class Register extends Component {
                             <input type="button" value="Apply" ref={submit=>(this.submit=submit)}
                             onClick={()=>{
                                                                                 
-                                this.postRequest ="email="+this.email.value+"&pass="+this.pass.value+"&submit="+this.submit+"&confpass=\
-                                "+this.confpass+"&lastname="+this.lastname+"&name="+this.name+"&company="+this.company+"&extra="+this.extra;
+                                this.postRequest ="email="+this.email.value+"&pass="+this.pass.value+"&submit="+this.submit.value+"&confpass=\
+                                "+this.confpass.value+"&lastname="+this.lastname.value+"&name="+this.name.value+"&company="+this.company.value+"&extra="+this.extra.value;
+                                console.log(this.postRequest);
                                 this.data = [this.state.url, this.state.origin, this.postRequest]
                                 value.submit(this.data)}
                              } ></input>

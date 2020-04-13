@@ -6,10 +6,12 @@ export class MyProvider extends Component {
     constructor(props){
         super(props)
         this.state = {
-            ApiKey:"XWor3IxeV2M9g/mQ",
-            Lenguage: "Eng",
-            LocalTime: "Spain",
-            UserName: "Ruslan",
+            ApiKey:"",
+            lang: "EN",
+            localZone: "Spain",
+            UserName: "",
+            email:"",
+            id:"",
             Warning:"",
             session:""
         }
@@ -21,21 +23,10 @@ export class MyProvider extends Component {
           ----seting new states
           ----- update is true or false*/
         }
-        this.setKeyFun = (key)=>{
-            if (key != "") {
-                this.setState({
-                    ApiKey:key,
-                })
-                }
-            else{
-                this.setState({
-                    ApiKey:"You need set a Key",
-                })
-            }
-        }
 
         this.request = (data) => {
           /* THIS FUNCTION MANAGE USER SESSIONS AND ALL CHANGES IN THE CONFIGURATION */
+          console.log(data[0])
           let lastIndex = data.length-1;
           var xhttp = new XMLHttpRequest();
           xhttp.open("POST", data[0], true);
@@ -44,75 +35,75 @@ export class MyProvider extends Component {
           xhttp.onreadystatechange = function () {
               if (this.readyState == 4 && this.status == 200) {
                   let result = JSON.parse(this.responseText);
-                  console.clear();
-                  console.log(result);
+                  console.log(result)
                   myCallback(result);
               }
           };
 
+   
+
           var myCallback = (result) => {
+            console.log(result)
             switch (data[1]) {
-              case "reg": this.reg(result); break;
-              case "log": this.log(result);break;
-              case "config":this.conf(result); break;            
+              case "reg": this.StartSession(result); break;
+              case "log": this.StartSession(result);break;
+              case "conf":this.updateGlobal(); break;
+              case "update":this.SetNewValues(result); break;         
               default:break;
             }
              
 
 
           }
-          this.reg=(r)=>{
-            console.log(r["success"])
-            if (r["success"] === "true") {
-              localStorage.setItem("userNameSession", [r["nameUser"],r["email"],[r["success"]]]);
-              this.setState({session:r["success"],})
-              this.setState({Warning:r[""],})
-              this.updateGlobal();
+          this.StartSession=(r)=>{
+            let asyncCall=(update)=>{
+              update();
             }
-            else {
-                this.setState({
-                  Warning:r["warning"],
-                })
-            }
-          }
-
-          this.log=(r)=>{
             if (r["success"] === "true") {
-              let obj = JSON.stringify({"name":r["nameUser"],"email":r["email"],"success":r["success"]})
+              let obj = JSON.stringify({"id":r["id"]})
               localStorage.setItem("userNameSession", obj);
               this.setState({session:r["success"],})
-              this.setState({Warning:r[""],})
-              this.updateGlobal();
+              this.setState({Warning:r[""],});
+              this.setState({email:r["email"],});
+              this.setState({id:r["id"],});
+              asyncCall(this.updateGlobal);
             }
             else {
                 this.setState({
                   Warning:r["warning"],
                 })
             }
+            
           }
 
-          this.conf=(r)=>{
-              //Config returns all data config from DB
-              this.update();
-
-              
-          }
-
-          
 
       }
 
       this.CloseSession=()=>{
-        localStorage.clear();
-        this.setState({session:""})
-      }
+       localStorage.clear();
+          this.setState({session:""})
+       }
 
 
       this.updateGlobal=()=>{
-       /*  MAKING A REQUEST TO conf.php AND GET THE LATES VALUES,
-        THEN IT SETS NEW STATES FOR ALL GLOBALS */
+        let id = JSON.parse(localStorage.getItem("userNameSession"));
+        let postRequest = "&id=" + id.id;
+        let data = ["http://localhost/PHP/GetGlobal.php", "update", postRequest]
+        this.request(data);
 
       }
+     
+      this.SetNewValues=(r)=>{
+        this.setState({Warning:r[""]});
+        this.setState({session:r["success"]})
+        this.setState({email:r["email"]});
+        this.setState({UserName:r["name"]});
+        this.setState({id:r["id"]});
+        this.setState({ApiKey:r["apikey"]});
+        this.setState({lang:r["lang"]});
+        this.setState({localZone:r["apikey"]});
+     
+      } 
     }
 
   componentWillMount() {
@@ -125,7 +116,6 @@ export class MyProvider extends Component {
     return (
       <MyContext.Provider value={{
           state: this.state, 
-          setKey: this.setKeyFun,
           submit: this.request,
           closeSession: this.CloseSession,
         }}>
