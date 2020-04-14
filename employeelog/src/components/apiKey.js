@@ -12,7 +12,6 @@ class ApiKey extends React.Component {
       origin:"conf",
     }
 
-    this.LocalZone= "Spain";
    
   }
   render() {
@@ -35,7 +34,7 @@ class ApiKey extends React.Component {
 
               <div className="card">
                 <div className="card-header">
-                  <h3 className="card-title">Current ApKey: <b>{value.state.ApiKey}</b></h3>
+                  <h3 className="card-title text-primary">Current ApiKey: <b>{value.state.ApiKey}</b></h3>
 
                   <div className="card-tools">
                     <button type="button" className="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
@@ -49,9 +48,11 @@ class ApiKey extends React.Component {
 
               </div>
 
+
+
               <div className="card">
                 <div className="card-header">
-                  <h3 className="card-title">Language: </h3>
+                  <h3 className="card-title text-primary">Language: </h3>
 
                   <div className="card-tools">
                     <button type="button" className="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
@@ -61,10 +62,48 @@ class ApiKey extends React.Component {
                 </div>
                 <div className="card-body">
                 <select ref={lang => (this.lang = lang)} >
-                    <option disabled selected>Select</option>
+                    <option disabled selected>{value.state.lang}</option>
                     <option value="IN">IN</option>
                     <option value="ES">ES</option>
                   </select>
+                </div>
+
+              </div>
+
+
+
+              <div className="card">
+                <div className="card-header">
+                  <h3 className="card-title text-primary">Break time: </h3>
+                  <div className="card-tools">
+                    <button type="button" className="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                      <i className="fas fa-minus"></i></button>
+
+                  </div>
+                </div>
+                <div className="card-body">
+                <input placeholder="time"  ref={breakTime => (this.breakTime = breakTime)}></input><i>H:min</i>
+                </div>
+
+              </div>
+
+
+              <div className="card">
+                <div className="card-header">
+                  <h3 className="card-title text-primary">Location: </h3>
+                  <div className="card-tools">
+                    <button type="button" className="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                      <i className="fas fa-minus"></i></button>
+
+                  </div>
+                </div>
+                <div className="card-body">
+                <select ref={LocalZone => (this.LocalZone = LocalZone)}>
+                    <option disabled selected>{value.state.localZone}</option>
+                    <option value="Spain">Spain</option>
+                    <option value="UK">UK</option>
+                    <option value="US">US</option>
+                </select>
                 </div>
 
               </div>
@@ -74,9 +113,17 @@ class ApiKey extends React.Component {
                 <div className="card-body" style={{textAlign:"center"}}>
                   <button className="btn btn-dark text-warning"
                       onClick={() => {
-                          this.postRequest = "&apikey="+this.mykey.value+"&lang="+this.lang.value+"&localZone="+this.LocalZone+"&id="+value.state.id;
+                        if (this.breakTime.value==="") {
+                          this.breakTime.value = value.state.breakTime
+                        }
+                        if (this.mykey.value==="") {
+                          this.mykey.value = value.state.ApiKey
+                        }
+                          this.postRequest = "&apikey="+this.mykey.value+"&lang="+this.lang.value+"&localZone="+this.LocalZone.value+"&id="+value.state.id+"&breakTime="+this.breakTime.value;
                           this.data = [this.state.url, this.state.origin, this.postRequest];
                           value.submit(this.data);
+                          this.mykey.value="";
+                          this.breakTime.value="";
                       }
                       }>
                       Save

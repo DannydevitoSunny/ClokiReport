@@ -1,0 +1,47 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'start', '--no-cache' ]
+2 info using npm@6.13.7
+3 info using node@v13.9.0
+4 verbose run-script [ 'prestart', 'start', 'poststart' ]
+5 info lifecycle employeelog@0.1.0~prestart: employeelog@0.1.0
+6 info lifecycle employeelog@0.1.0~start: employeelog@0.1.0
+7 verbose lifecycle employeelog@0.1.0~start: unsafe-perm in lifecycle true
+8 verbose lifecycle employeelog@0.1.0~start: PATH: /usr/local/lib/node_modules/npm/node_modules/npm-lifecycle/node-gyp-bin:/home/rus/Escritorio/TRABAJO/employeelog/clockify_io/employeelog/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+9 verbose lifecycle employeelog@0.1.0~start: CWD: /home/rus/Escritorio/TRABAJO/employeelog/clockify_io/employeelog
+10 silly lifecycle employeelog@0.1.0~start: Args: [ '-c', 'react-scripts start' ]
+11 silly lifecycle employeelog@0.1.0~start: Returned: code: 134  signal: null
+12 info lifecycle employeelog@0.1.0~start: Failed to exec start script
+13 verbose stack Error: employeelog@0.1.0 start: `react-scripts start`
+13 verbose stack Exit status 134
+13 verbose stack     at EventEmitter.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-lifecycle/index.js:332:16)
+13 verbose stack     at EventEmitter.emit (events.js:321:20)
+13 verbose stack     at ChildProcess.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-lifecycle/lib/spawn.js:55:14)
+13 verbose stack     at ChildProcess.emit (events.js:321:20)
+13 verbose stack     at maybeClose (internal/child_process.js:1026:16)
+13 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:286:5)
+14 verbose pkgid employeelog@0.1.0
+15 verbose cwd /home/rus/Escritorio/TRABAJO/employeelog/clockify_io/employeelog
+16 verbose Linux 5.3.0-46-generic
+17 verbose argv "/usr/local/bin/node" "/usr/local/bin/npm" "start" "--no-cache"
+18 verbose node v13.9.0
+19 verbose npm  v6.13.7
+20 error code ELIFECYCLE
+21 verbose stack Error [ERR_STREAM_DESTROYED]: Cannot call write after a stream was destroyed
+21 verbose stack     at WriteStream.Writable.write (_stream_writable.js:322:17)
+21 verbose stack     at EventEmitter.log.write (/usr/local/lib/node_modules/npm/node_modules/npmlog/log.js:271:10)
+21 verbose stack     at EventEmitter.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npmlog/log.js:235:12)
+21 verbose stack     at Array.forEach (<anonymous>)
+21 verbose stack     at EventEmitter.log.emitLog (/usr/local/lib/node_modules/npm/node_modules/npmlog/log.js:232:28)
+21 verbose stack     at EventEmitter.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npmlog/log.js:214:8)
+21 verbose stack     at EventEmitter.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npmlog/log.js:286:23)
+21 verbose stack     at /usr/local/lib/node_modules/npm/lib/utils/error-handler.js:198:16
+21 verbose stack     at Array.forEach (<anonymous>)
+21 verbose stack     at errorHandler (/usr/local/lib/node_modules/npm/lib/utils/error-handler.js:196:5)
+22 verbose cwd /home/rus/Escritorio/TRABAJO/employeelog/clockify_io/employeelog
+23 verbose Linux 5.3.0-46-generic
+24 verbose argv "/usr/local/bin/node" "/usr/local/bin/npm" "start" "--no-cache"
+25 verbose node v13.9.0
+26 verbose npm  v6.13.7
+27 error code ERR_STREAM_DESTROYED
+28 error Cannot call write after a stream was destroyed
+29 verbose exit [ 1, true ]

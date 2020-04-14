@@ -6,14 +6,15 @@ export class MyProvider extends Component {
     constructor(props){
         super(props)
         this.state = {
-            ApiKey:"",
-            lang: "EN",
-            localZone: "Spain",
+            ApiKey:"Key Required",
+            lang: "IN",
+            localZone: "US",
             UserName: "",
             email:"",
             id:"",
             Warning:"",
-            session:""
+            session:"",
+            breakTime:"1"
         }
 
         
@@ -26,16 +27,13 @@ export class MyProvider extends Component {
 
         this.request = (data) => {
           /* THIS FUNCTION MANAGE USER SESSIONS AND ALL CHANGES IN THE CONFIGURATION */
-          console.log(data[0])
-          let lastIndex = data.length-1;
           var xhttp = new XMLHttpRequest();
           xhttp.open("POST", data[0], true);
           xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-          xhttp.send(data[lastIndex]);
+          xhttp.send(data[2]);
           xhttp.onreadystatechange = function () {
               if (this.readyState == 4 && this.status == 200) {
                   let result = JSON.parse(this.responseText);
-                  console.log(result)
                   myCallback(result);
               }
           };
@@ -43,7 +41,6 @@ export class MyProvider extends Component {
    
 
           var myCallback = (result) => {
-            console.log(result)
             switch (data[1]) {
               case "reg": this.StartSession(result); break;
               case "log": this.StartSession(result);break;
@@ -101,7 +98,8 @@ export class MyProvider extends Component {
         this.setState({id:r["id"]});
         this.setState({ApiKey:r["apikey"]});
         this.setState({lang:r["lang"]});
-        this.setState({localZone:r["apikey"]});
+        this.setState({localZone:r["localZone"]});
+        this.setState({breakTime:r["breakTime"]});
      
       } 
     }

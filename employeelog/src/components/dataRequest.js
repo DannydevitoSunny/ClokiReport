@@ -15,6 +15,7 @@ class Info extends React.Component {
         this.logResponse = [];
         this.keysDate = [];
         this.state = {
+            breakTime:"",
             display: "none",
             name: "",
             usersData: "",
@@ -26,6 +27,7 @@ class Info extends React.Component {
             workspace: "",
             newKey: "XWor3IxeV2M9g/mQ",
             goodKey: "",
+            currentKey:"",
             id: "",
             users: [],
             data: {
@@ -86,7 +88,7 @@ class Info extends React.Component {
 
         this.getUsers = () => {
             //New request clear the old data (refresh)
-            this.key = this.currentKey;
+            
             this.logResponse = [];
             this.setState({ users: [] });
             let url = 'https://api.clockify.me/api/v1/workspaces/5c334808b079874ebdd7c345/users';
@@ -94,7 +96,8 @@ class Info extends React.Component {
 
             xhttp.open('GET', url, true);
             xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.setRequestHeader("X-Api-Key", this.key);
+            console.log(this.state.currentKey)
+            xhttp.setRequestHeader("X-Api-Key", this.state.currentKey);
             xhttp.send();
 
             xhttp.onload = function () {
@@ -293,7 +296,7 @@ class Info extends React.Component {
                             ///////////////////////////////////////
 
                             if (this.endTurn === false) {
-                                if ((startHour - this.endH) < 1) {
+                                if ((startHour - this.endH) < this.state.breakTime) {
                                     this.endH = endHour;
                                     this.LOGS[0][date][0][2] = endHourDateFormat //End FIRST turn
                                 }
@@ -422,6 +425,34 @@ class Info extends React.Component {
 
         }
 
+        this.update=(r)=>{
+            this.setState({currentKey:r["apikey"]});
+            this.setState({breakTime:r["breakTime"]});
+            this.getUsers();
+        }
+    }
+    componentDidMount(){
+        //Need more security,--> add email to localStorage and id
+        //In back end I need to check  if they match
+        if (localStorage.getItem("userNameSession")!==null) {
+            let id = JSON.parse(localStorage.getItem("userNameSession"));
+            let postRequest = "id=" + id.id;
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "http://localhost/PHP/GetGlobal.php", true);
+            xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+            xhttp.send(postRequest);
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    let result = JSON.parse(this.responseText);
+                    myCallback(result);
+                }
+            };
+            let myCallback=(r)=>{
+                this.update(r)
+            }
+        }
+        
+        
     }
 
     render() {
@@ -436,11 +467,7 @@ class Info extends React.Component {
                             <div className="col-12">
                                 <div className="card">
                                     <div className="card-header">
-
-                                        <span style={{ display: "none" }}>{this.currentKey = value.state.ApiKey}</span>
-
-                                        <p className="text-danger">{this.state.goodKey}</p>
-                                        <h3 className="card-title">Table Users<button className=" ml-2 btn bg-primary" onClick={this.getUsers}>Get Report</button> </h3>
+                                        <p className="text-danger">{this.state.goodKey}</p>                                 
                                     </div>
 
                                     <div className="card-body table-responsive p-0">
