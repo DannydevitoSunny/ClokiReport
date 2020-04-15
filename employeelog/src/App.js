@@ -2,7 +2,7 @@ import React from 'react';
 import RouteSS from './components/Routes.js'
 import Login from './components/login.js'
 import { Component } from 'react';
-import { MyContext, MyProvider } from './components/globalConfig.js'
+import {MyProvider } from './components/globalConfig.js'
 
 
 

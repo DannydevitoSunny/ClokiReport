@@ -1,6 +1,6 @@
 import React from "react";
 import './Custom_styles/style_one.css'
-import { MyProvider, MyContext } from "./globalConfig.js";
+import {MyContext } from "./globalConfig.js";
 
 
 
@@ -43,7 +43,7 @@ class ApiKey extends React.Component {
                   </div>
                 </div>
                 <div className="card-body">
-                  <input type="text" ref={mykey => (this.mykey = mykey)} ></input><br></br>
+                  <input placeholder="New key" type="text" ref={mykey => (this.mykey = mykey)} ></input><br></br>
                 </div>
 
               </div>
@@ -74,7 +74,7 @@ class ApiKey extends React.Component {
 
               <div className="card">
                 <div className="card-header">
-                  <h3 className="card-title text-primary">Break time: </h3>
+                  <h3 className="card-title text-primary">Break time ({value.state.breakTime}): </h3>
                   <div className="card-tools">
                     <button type="button" className="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
                       <i className="fas fa-minus"></i></button>
@@ -82,15 +82,14 @@ class ApiKey extends React.Component {
                   </div>
                 </div>
                 <div className="card-body">
-                <input placeholder="time"  ref={breakTime => (this.breakTime = breakTime)}></input><i>H:min</i>
+                <input placeholder="Hour:min"  ref={breakTime => (this.breakTime = breakTime)}></input>
                 </div>
 
               </div>
-
 
               <div className="card">
                 <div className="card-header">
-                  <h3 className="card-title text-primary">Location: </h3>
+                  <h3 className="card-title text-primary">Company name: {value.state.Company} </h3>
                   <div className="card-tools">
                     <button type="button" className="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
                       <i className="fas fa-minus"></i></button>
@@ -98,32 +97,65 @@ class ApiKey extends React.Component {
                   </div>
                 </div>
                 <div className="card-body">
-                <select ref={LocalZone => (this.LocalZone = LocalZone)}>
-                    <option disabled selected>{value.state.localZone}</option>
-                    <option value="Spain">Spain</option>
-                    <option value="UK">UK</option>
-                    <option value="US">US</option>
-                </select>
+                <input placeholder="New Name"  ref={company => (this.company = company)}></input>
                 </div>
 
               </div>
+
+              <div className="card">
+                <div className="card-header">
+                  <h3 className="card-title text-primary">CIF: {value.state.CIF} </h3>
+                  <div className="card-tools">
+                    <button type="button" className="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                      <i className="fas fa-minus"></i></button>
+
+                  </div>
+                </div>
+                <div className="card-body">
+                <input placeholder="New CIF"  ref={CIF => (this.CIF = CIF)}></input>
+                </div>
+
+              </div>
+
+              
 
               {/* @@@@@@@@@@@@@@@@@@ S A V E  C H A N GE  @@@@@@@@@@@@@@@@@@@@@@ */}
               <div className="card" style={{textAlign:"center"}}>
                 <div className="card-body" style={{textAlign:"center"}}>
-                  <button className="btn btn-dark text-warning"
+                  <button className="btn btn-primary text-white"
                       onClick={() => {
                         if (this.breakTime.value==="") {
                           this.breakTime.value = value.state.breakTime
                         }
+                        else{
+                          if (this.breakTime.value.toString().length > 5) {
+                            this.breakTime.value = this.breakTime.value.toString().substring(0, 5);
+                          }
+                          this.breakTime.value = this.breakTime.value.replace(":",".");
+                          
+                          if (this.breakTime.value > 22.59) {
+                            this.breakTime.value = 1;
+                          }
+                        
+                          
+                        }
                         if (this.mykey.value==="") {
                           this.mykey.value = value.state.ApiKey
                         }
-                          this.postRequest = "&apikey="+this.mykey.value+"&lang="+this.lang.value+"&localZone="+this.LocalZone.value+"&id="+value.state.id+"&breakTime="+this.breakTime.value;
+                        if (this.company.value==="") {
+                          this.company.value = value.state.Company
+                        }
+                        if (this.CIF.value==="") {
+                          this.CIF.value = value.state.CIF
+                        }
+                          this.postRequest = "&apikey="+this.mykey.value+"&lang="+this.lang.value+"&id="+value.state.id+"&breakTime="+this.breakTime.value+"&company="+this.company.value+"&CIF="+this.CIF.value;
+                          console.log(this.postRequest)
                           this.data = [this.state.url, this.state.origin, this.postRequest];
                           value.submit(this.data);
                           this.mykey.value="";
                           this.breakTime.value="";
+                          this.company.value="";
+                          this.CIF.value="";
                       }
                       }>
                       Save

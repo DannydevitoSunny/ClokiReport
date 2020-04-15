@@ -3,7 +3,8 @@ import './Custom_styles/style_one.css'
 import Register from './register.js'
 import { Route, Switch, Link, BrowserRouter as Router, } from "react-router-dom";
 import RouteSS from './Routes.js';
-import { MyProvider, MyContext } from "./globalConfig.js";
+import {MyContext } from "./globalConfig.js";
+import FacebookLog from './FacebookLog.js';
 
 
 
@@ -26,7 +27,7 @@ class Login extends React.Component {
         return (
             <MyContext.Consumer>
                 {(value) => (
-                    <div>
+                    <div >
 
                         {/*  this state.login will depends of local storage */}
                         {(value.state.session!=="") ? (<RouteSS />) : (
@@ -34,31 +35,23 @@ class Login extends React.Component {
                                 <Switch>
                                     <Route path="/reg" exact component={Register}></Route>
                                     <Route path="/Routes.js" exact component={RouteSS}></Route>
-                                    <div className="limiter">
-                                        <div className="container-login100">
-                                            <div className="wrap-login100 p-t-90 p-b-30">
+                                    <div className="limiter" >
+                                        <div className="container-login100" style={{backgroundColor:" #3a67e3  ", fontFamily:"sans-serif"}}>
+                                            <div className="wrap-login100 text-center" style={{maxWidth:"30%",minWidth: "380px",}}>
 
-                                                <span className="login100-form-title p-b-40">
+                                                <span className="h1 text-white" style={{fontFamily:"'Lobster'" }} >
                                                     Cloki-Report {this.state.login}
                                                 </span>
 
-                                                <div>
-                                                    <a href="" className="btn-login-with bg1 m-b-10">
-                                                        <i className="fa fa-facebook-official"></i>
-                                            Login with Facebook
-                                        </a>
-
-                                                    <a href="" className="btn-login-with bg2">
-                                                        <i className="fa fa-twitter"></i>
-                                            Login with Twitter
-                                        </a>
+                                                <div className="mt-4">
+                                                <FacebookLog/>
                                                 </div>
                                                 <div className="login100-form validate-form" >
-                                                    <div className="text-center p-t-55 p-b-30">
-                                                        <span className="txt1">
+                                                    <div className="text-center p-t-10 p-b-30">
+                                                        <span className="text-warning">
                                                             Login with email
                                                         </span>
-                                                        <p className="text-danger">{value.state.Warning}</p>
+                                                        <p className="text-white">{value.state.Warning}</p>
                                                     </div>
 
                                                     <div className="wrap-input100 validate-input m-b-16" data-validate="Please enter email: ex@abc.xyz">
@@ -75,7 +68,7 @@ class Login extends React.Component {
                                                     </div>
 
                                                     <div className="container-login100-form-btn">
-                                                        <button className="login100-form-btn"
+                                                        <button className="login100-form-btn" style={{fontFamily:"sans-serif"}}
                                                             onClick={() => {
 
                                                                 this.postRequest = "email=" + this.email.value + "&pass=" + this.pass.value;
@@ -88,11 +81,11 @@ class Login extends React.Component {
                                                     </div>
                                                 </div>
                                                 <div className="m-2">
-                                                    <span className="txt2 p-b-10">
+                                                    <span className="text-warning pr-4">
                                                         Don’t have an account?
                                         </span>
 
-                                                    <Link to="/reg"><a href="" className="txt3 bo1 hov1"> Sign up now</a></Link>
+                                                    <Link to="/reg"><span href="" className="text-white pl-2 underline"> <u>Sign up now</u></span></Link>
                                                 </div>
 
 

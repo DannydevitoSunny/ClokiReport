@@ -15,6 +15,8 @@ class Info extends React.Component {
         this.logResponse = [];
         this.keysDate = [];
         this.state = {
+            Company:"",
+            CIF:"",
             breakTime:"",
             display: "none",
             name: "",
@@ -25,7 +27,6 @@ class Info extends React.Component {
             startMonth: currentMonth,
             selectedUser: "",
             workspace: "",
-            newKey: "XWor3IxeV2M9g/mQ",
             goodKey: "",
             currentKey:"",
             id: "",
@@ -64,7 +65,7 @@ class Info extends React.Component {
             xhttp.open('GET', url, true);
             xhttp.setRequestHeader("Content-type", "application/json");
 
-            xhttp.setRequestHeader("X-Api-Key", this.state.newKey);
+            xhttp.setRequestHeader("X-Api-Key", this.state.currentKey);
             xhttp.send();
             xhttp.onload = function () {
                 if (this.readyState === 4 && this.status === 200) {
@@ -339,7 +340,6 @@ class Info extends React.Component {
             this.setState({
                 log: this.keyDates.map((date) => {
                     let lastTask = this.LOGS[0][date].length - 1;
-                    let b = 2;
                     return (
                         <tr className="row100 body" key={date} >
                             <td className="cell100 column1">{this.LOGS[0][date][0][0]}</td>
@@ -356,36 +356,39 @@ class Info extends React.Component {
         }
 
         this.printData = () => {
-            let style = '<style>body{font-family:sans-serif; font-size: 0.9em;}\
-            div table {\
-                text-align:center;\
-                border-collapse: collapse;\
-                width: 100%;\
-                font-size: 0.9em;\
-              }\
-              \
-              div table td, div table th {\
-                border: 1px solid #ddd;\
-                padding: 8px;\
-              }\
-              \
-              div table tr:nth-child(even){background-color: #c3c3c3;}\
-              \
-              div table tr:hover {background-color: #ddd;}\
-              \
-              div table th {\
-                padding-top: 12px;\
-                padding-bottom: 12px;\
-                text-align: left;\
-                background-color: #4CAF50;\
-                color: white;\
-              }</style>';
+           // let link = '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"></link>'
+            let style = '<style>body{font-family:sans-serif; font-size: 0.9em; padding-left:2%;padding-top:2%;}\
+                            div table {\
+                                text-align:center;\
+                                border-collapse: collapse;\
+                                width: 90%;\
+                                font-size: 0.9em;\
+                            }\
+                            \
+                            div table td, div table th {\
+                                border: 1px solid #ddd;\
+                                padding: 4px;\
+                            }\
+                            \
+                            div table tr:nth-child(even){background-color: #c3c3c3;}\
+                            \
+                            div table tr:hover {background-color: #ddd;}\
+                            \
+                            div table th {\
+                                padding-top: 12px;\
+                                padding-bottom: 12px;\
+                                text-align: left;\
+                                background-color: #4CAF50;\
+                                color: white;\
+                         }</style>';
             let newWin = window.open();
             newWin.document.write('<head>' + style + '</head>')
             newWin.document.write("<body>\
-           <section class='content'><h2 style='color:#3366ff'>Printing Report</h2>")
-            newWin.document.write('<p><b>Date Report:</b>' + this.year.value + '/' + this.select.value + ',  <b>Company:</b><i>Comerline</i></p>\
-            <h3>Worker : '+ this.state.name + '</h3><div style="width:50%;">' + this.div.innerHTML + '</div></section></body>');
+           <section class='content'><h2 style='color:#3366ff'>Printed Report</h2>")
+            newWin.document.write('<p><b>Date report: </b>' + this.year.value + '/' + this.select.value + ',  <b>Company:</b><i> '+this.state.Company+'</i></p>\
+            <p><b>CIF:</b> '+this.state.CIF+'</p>\
+            <h3>Employee :<small> '+ this.state.name + '</small></h3><div style="width:50%;">' + this.div.innerHTML + '</div></section>\
+            <footer><div style="margin-top:5px;width:15%; height:60px; border:0.2px solid grey;"><span style="color:lightblue;">Sing</span></div></footer></body>');
             newWin.print();
 
 
@@ -428,6 +431,8 @@ class Info extends React.Component {
         this.update=(r)=>{
             this.setState({currentKey:r["apikey"]});
             this.setState({breakTime:r["breakTime"]});
+            this.setState({Company:r["company"]});
+            this.setState({CIF:r["CIF"]});
             this.getUsers();
         }
     }
@@ -466,7 +471,8 @@ class Info extends React.Component {
                         <div className="row">
                             <div className="col-12">
                                 <div className="card">
-                                    <div className="card-header">
+                                    <div className="card-header text-center">
+                                    {this.state.Company}
                                         <p className="text-danger">{this.state.goodKey}</p>                                 
                                     </div>
 
@@ -496,7 +502,7 @@ class Info extends React.Component {
                                     <div className="card-header">
 
 
-                                        <div className="row">
+                                        <div className="row w-50">
                                             <select className="col-sm" ref={select => { this.select = select }}>
                                                 <option>- Month -</option>
                                                 <option value="01">January</option>

@@ -1,8 +1,8 @@
 import React from "react";
 import { Route, Switch, Link, BrowserRouter as Router, } from "react-router-dom";
 import Info from './dataRequest.js'
-import Login from './login.js'
 import Tweaks from './apiKey';
+import FacebookLog from './FacebookLog.js';
 import { MyContext } from "./globalConfig.js";
 
 
@@ -62,19 +62,12 @@ class RouteSS extends React.Component {
                                                         Close Menu
                                             </p>
                                                 </li>
+                                               
                                                 <li className="nav-item">
-                                                    <Link to="/">
+                                                    <Link to="/report">
                                                         <span className="nav-link ">
                                                             <i className="fas fa-home fa-lg"></i>
                                                             <p className="ml-1 text-white">Home</p>
-                                                        </span>
-                                                    </Link>
-                                                </li>
-                                                <li className="nav-item">
-                                                    <Link to="/report">
-                                                        <span className="nav-link">
-                                                            <i className="fas fa-table fa-lg"></i>
-                                                            <p className="ml-2 text-white">Info</p>
                                                         </span>
                                                     </Link>
                                                 </li>
@@ -106,7 +99,6 @@ class RouteSS extends React.Component {
                                             <div className="card-body">
 
                                                 <Switch>
-
                                                     <Route path="/report" exact render={(props) => <Info {...props} param1={this.state.key} />} ></Route>
                                                     <Route path="/tweaks" exact render={(props) => <Tweaks {...props} update={this.getkey} />}></Route>
 

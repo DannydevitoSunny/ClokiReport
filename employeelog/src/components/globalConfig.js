@@ -6,9 +6,10 @@ export class MyProvider extends Component {
     constructor(props){
         super(props)
         this.state = {
+            CIF:"",
+            Company:"",
             ApiKey:"Key Required",
             lang: "IN",
-            localZone: "US",
             UserName: "",
             email:"",
             id:"",
@@ -33,7 +34,10 @@ export class MyProvider extends Component {
           xhttp.send(data[2]);
           xhttp.onreadystatechange = function () {
               if (this.readyState == 4 && this.status == 200) {
+                /* let result =this.responseText;
+                console.log(result) */
                   let result = JSON.parse(this.responseText);
+                  console.log(result)
                   myCallback(result);
               }
           };
@@ -45,7 +49,8 @@ export class MyProvider extends Component {
               case "reg": this.StartSession(result); break;
               case "log": this.StartSession(result);break;
               case "conf":this.updateGlobal(); break;
-              case "update":this.SetNewValues(result); break;         
+              case "update":this.SetNewValues(result); break; 
+              case "facebook":this.StartSession(result); break;          
               default:break;
             }
              
@@ -53,17 +58,12 @@ export class MyProvider extends Component {
 
           }
           this.StartSession=(r)=>{
-            let asyncCall=(update)=>{
-              update();
-            }
+            
             if (r["success"] === "true") {
-              let obj = JSON.stringify({"id":r["id"]})
+              let id = r["id"];
+              let obj = JSON.stringify({"id":id})
               localStorage.setItem("userNameSession", obj);
-              this.setState({session:r["success"],})
-              this.setState({Warning:r[""],});
-              this.setState({email:r["email"],});
-              this.setState({id:r["id"],});
-              asyncCall(this.updateGlobal);
+              this.updateGlobal();
             }
             else {
                 this.setState({
@@ -98,8 +98,9 @@ export class MyProvider extends Component {
         this.setState({id:r["id"]});
         this.setState({ApiKey:r["apikey"]});
         this.setState({lang:r["lang"]});
-        this.setState({localZone:r["localZone"]});
         this.setState({breakTime:r["breakTime"]});
+        this.setState({Company:r["company"]});
+        this.setState({CIF:r["CIF"]})
      
       } 
     }
