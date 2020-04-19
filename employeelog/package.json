@@ -8,11 +8,13 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
     "chart.js": "^2.9.3",
+    "i18next": "^19.4.2",
     "print-js": "^1.0.63",
     "react": "^16.13.0",
     "react-chartjs-2": "^2.9.0",
     "react-dom": "^16.13.0",
     "react-facebook-auth": "^1.4.0",
+    "react-i18next": "^11.3.4",
     "react-router": "^5.1.2",
     "react-scripts": "3.4.0"
   },

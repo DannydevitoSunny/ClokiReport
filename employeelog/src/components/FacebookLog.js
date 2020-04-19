@@ -1,10 +1,11 @@
 import React from 'react';
 import FacebookAuth from 'react-facebook-auth';
-import {MyContext } from "./globalConfig.js";
+import {MyContext,Domain} from "./globalConfig.js";
+import {Translate} from './LocateTrans.js'
  
 const MyFacebookButton = ({ onClick }) => (
   <button className="fa fa-facebook-official btn-login-with bg1 m-b-10 " onClick={onClick}>
-    Login with facebook
+    <Translate word="Log in with Facebook"/>
   </button>
 );
 
@@ -16,9 +17,8 @@ const FacebookLog = () => (
       <FacebookAuth
         appId="260918438260759"
         callback={(r)=>{
-            console.log(r);
             if (typeof r["email"]!=="undefined" ) {
-                let url = "http://localhost/PHP/facebook_session.php";
+                let url = Domain+"/PHP/facebook_session.php";
                 let origin = "facebook";
                 let post = "email="+r["email"];
                 let data = [url,origin,post];

@@ -1,0 +1,15 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'start', '--no-cache' ]
+2 info using npm@6.13.7
+3 info using node@v13.9.0
+4 verbose run-script [ 'prestart', 'start', 'poststart' ]
+5 info lifecycle employeelog@0.1.0~prestart: employeelog@0.1.0
+6 info lifecycle employeelog@0.1.0~start: employeelog@0.1.0
+7 verbose lifecycle employeelog@0.1.0~start: unsafe-perm in lifecycle true
+8 verbose lifecycle employeelog@0.1.0~start: PATH: /usr/local/lib/node_modules/npm/node_modules/npm-lifecycle/node-gyp-bin:/home/rus/Escritorio/TRABAJO/employeelog/clockify_io/employeelog/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+9 verbose lifecycle employeelog@0.1.0~start: CWD: /home/rus/Escritorio/TRABAJO/employeelog/clockify_io/employeelog
+10 silly lifecycle employeelog@0.1.0~start: Args: [ '-c', 'react-scripts start' ]
+11 timing npm Completed in 3861656ms
+12 error cb() never called!
+13 error This is an error with npm itself. Please report this error at:
+14 error <https://npm.community>

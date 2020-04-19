@@ -1,9 +1,10 @@
 import React from "react";
-import { Route, Switch, Link, BrowserRouter as Router, } from "react-router-dom";
+import { Redirect,Route, Switch, Link, BrowserRouter as Router, } from "react-router-dom";
 import Info from './dataRequest.js'
 import Tweaks from './apiKey';
 import FacebookLog from './FacebookLog.js';
-import { MyContext } from "./globalConfig.js";
+import { MyContext, Translate } from "./globalConfig.js";
+/* import Translate from './Translate.js'; */
 
 
 
@@ -50,24 +51,25 @@ class RouteSS extends React.Component {
 
                                             </div>
                                             <div className="info">
-                                                 <a href="#" className="d-block">Welcome {value.state.UserName}</a>
+                                         
+                                                    <span href="" style={{ cursor: "pointer",}} className=" ml-2 btn-outline-secondary text-white font-weight-light" onClick={this.fun}>
+                                                        <i className="fas fa-bars"></i> <Translate word="Welcome" />  {value.state.UserName}
+                                                    </span>
+                                             
+                                               
                                             </div>
                                         </div>
                                         <nav className="mt-2">
 
                                             <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-                                                <li className="nav-item">
-                                                    <p href="" style={{ cursor: "pointer" }} className="nav-link ml-2 btn-outline-secondary text-white font-weight-light  h3 " onClick={this.fun}>
-                                                        Close Menu
-                                            </p>
-                                                </li>
+                                                
                                                
                                                 <li className="nav-item">
                                                     <Link to="/report">
                                                         <span className="nav-link ">
                                                             <i className="fas fa-home fa-lg"></i>
-                                                            <p className="ml-1 text-white">Home</p>
+                                                            <p className="ml-1 text-white"><Translate word="Home" /></p>
                                                         </span>
                                                     </Link>
                                                 </li>
@@ -75,14 +77,14 @@ class RouteSS extends React.Component {
                                                     <Link to="/tweaks">
                                                         <span className="nav-link">
                                                             <i className="fas fa-cog fa-lg"></i>
-                                                            <p className="ml-2 text-white">Configuration</p>
+                                                            <p className="ml-2 text-white"><Translate word="Configuration" /></p>
                                                         </span>
                                                     </Link>
                                                 </li>
-                                                <li className="nav-item">
+                                                <li className="nav-item" style={{ cursor: "pointer",}}>
                                                     <span  className="nav-link">
                                                         <i className="fas fa-user fa-lg"></i>
-                                                        <p className="ml-2" onClick={()=>value.closeSession()}>Log out</p>
+                                                        <p className="ml-2" onClick={()=>value.closeSession()}><Translate word="Log Out" /></p>
                                                     </span>
                                                 </li>
 
@@ -101,6 +103,7 @@ class RouteSS extends React.Component {
                                                 <Switch>
                                                     <Route path="/report" exact render={(props) => <Info {...props} param1={this.state.key} />} ></Route>
                                                     <Route path="/tweaks" exact render={(props) => <Tweaks {...props} update={this.getkey} />}></Route>
+                                                    <Redirect from="/*" to="/report" />
 
                                                 </Switch>
 

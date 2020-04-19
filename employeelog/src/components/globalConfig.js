@@ -1,7 +1,45 @@
 import React, { Component } from 'react';
+import i18n from "i18next";
+import { useTranslation, initReactI18next } from "react-i18next";
+import {spanish} from './Translate.js';
+export var Domain = "http://192.168.1.48";
+var lang = navigator.language.substring(0, 2).toUpperCase();
 
+const resources = {
+  ES: {
+    translation: spanish
+  },
+  EN: {
+    translation: {//Original Web is already in english
+     
+    }
+  }
+};
+
+function changeLenguage(lang){
+  i18n
+    .use(initReactI18next)
+    .init({
+      resources,
+      lng: lang,
+      fallbackLng: lang, 
+
+      keySeparator: false, 
+
+      interpolation: {
+        escapeValue: false 
+      }
+    });
+}
+
+
+
+  export function Translate(r) {
+    const { t } = useTranslation();
+  
+    return t(r.word);
+  }
 export const MyContext = React.createContext();
-
 export class MyProvider extends Component {
     constructor(props){
         super(props)
@@ -19,12 +57,6 @@ export class MyProvider extends Component {
         }
 
         
-       
-        this.updateConfig=(update)=>{
-          /*Making a request after login or after change the configuration
-          ----seting new states
-          ----- update is true or false*/
-        }
 
         this.request = (data) => {
           /* THIS FUNCTION MANAGE USER SESSIONS AND ALL CHANGES IN THE CONFIGURATION */
@@ -34,10 +66,8 @@ export class MyProvider extends Component {
           xhttp.send(data[2]);
           xhttp.onreadystatechange = function () {
               if (this.readyState == 4 && this.status == 200) {
-                /* let result =this.responseText;
-                console.log(result) */
                   let result = JSON.parse(this.responseText);
-                  console.log(result)
+                  console.log(result);
                   myCallback(result);
               }
           };
@@ -100,18 +130,23 @@ export class MyProvider extends Component {
         this.setState({lang:r["lang"]});
         this.setState({breakTime:r["breakTime"]});
         this.setState({Company:r["company"]});
-        this.setState({CIF:r["CIF"]})
-     
-      } 
+        this.setState({CIF:r["CIF"]});
+        lang = this.state.lang.toString();
+        } 
     }
 
   componentWillMount() {
       if (localStorage.getItem("userNameSession")!==null) {
         this.updateGlobal();
       }
+      
+  }
+  componentWillUpdate(nextProps, nextState){
+    changeLenguage(this.state.lang);
   }
     
   render() {
+    
     return (
       <MyContext.Provider value={{
           state: this.state, 

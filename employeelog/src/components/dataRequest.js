@@ -1,7 +1,7 @@
 import React from 'react';
 import './Custom_styles/style_one.css'
 import { Bar } from 'react-chartjs-2';
-import { MyContext } from "./globalConfig.js";
+import { Translate,MyContext,Domain} from "./globalConfig.js";
 
 class Info extends React.Component {
     constructor(props) {
@@ -15,6 +15,7 @@ class Info extends React.Component {
         this.logResponse = [];
         this.keysDate = [];
         this.state = {
+            lang:"",
             Company:"",
             CIF:"",
             breakTime:"",
@@ -97,7 +98,6 @@ class Info extends React.Component {
 
             xhttp.open('GET', url, true);
             xhttp.setRequestHeader("Content-type", "application/json");
-            console.log(this.state.currentKey)
             xhttp.setRequestHeader("X-Api-Key", this.state.currentKey);
             xhttp.send();
 
@@ -356,16 +356,31 @@ class Info extends React.Component {
         }
 
         this.printData = () => {
-           // let link = '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"></link>'
-            let style = '<style>body{font-family:sans-serif; font-size: 0.9em; padding-left:2%;padding-top:2%;}\
+            let translatePrintData=[];
+            if (this.state.lang ==="EN") {
+                translatePrintData = ['Date Report', 'Employee'];
+            }
+            else{
+                translatePrintData = ['Fecha Reporte', 'Empleado'];
+            }
+            let style = '<style>body{font-family:sans-serif; font-size: 0.9em; }\
                             div table {\
                                 text-align:center;\
                                 border-collapse: collapse;\
                                 width: 90%;\
                                 font-size: 0.9em;\
                             }\
+                            .contentGrid {\
+                                display:grid;\
+                                grid-template-columns: repeat(2, 1fr);\
+                                grid-template-rows: auto;\
+                                grid-gap: 20px;\
+                                width:50%;\
+                                margin-bottom:30px;\
+                                }\
                             \
                             div table td, div table th {\
+                                text-align:center;\
                                 border: 1px solid #ddd;\
                                 padding: 4px;\
                             }\
@@ -384,10 +399,14 @@ class Info extends React.Component {
             let newWin = window.open();
             newWin.document.write('<head>' + style + '</head>')
             newWin.document.write("<body>\
-           <section class='content'><h2 style='color:#3366ff'>Printed Report</h2>")
-            newWin.document.write('<p><b>Date report: </b>' + this.year.value + '/' + this.select.value + ',  <b>Company:</b><i> '+this.state.Company+'</i></p>\
-            <p><b>CIF:</b> '+this.state.CIF+'</p>\
-            <h3>Employee :<small> '+ this.state.name + '</small></h3><div style="width:50%;">' + this.div.innerHTML + '</div></section>\
+                <section class='content'><h2 style='color:#3366ff'>"+this.state.Company+"</h2>");
+            newWin.document.write('<div class="contentGrid">\
+                                        <span><b>'+translatePrintData[0]+': </b>' + this.year.value + '/' + this.select.value + ',\</span>\
+                                        <span><b>CIF:</b> '+this.state.CIF+'</span>\
+                                        <span>DNI/NIE :<div style="border-bottom:1px solid;"></div></span>\
+                                        <b>'+translatePrintData[1]+' :'+ this.state.name + '</b>\
+                                    </div>\
+            <div style="width:50%;">' + this.div.innerHTML + '</div></section>\
             <footer><div style="margin-top:5px;width:15%; height:60px; border:0.2px solid grey;"><span style="color:lightblue;">Sing</span></div></footer></body>');
             newWin.print();
 
@@ -427,12 +446,20 @@ class Info extends React.Component {
             this.getLogs(this.year.value, this.select.value)
 
         }
-
+        this.language = [];
         this.update=(r)=>{
             this.setState({currentKey:r["apikey"]});
             this.setState({breakTime:r["breakTime"]});
             this.setState({Company:r["company"]});
+            this.setState({lang:r["lang"]});
             this.setState({CIF:r["CIF"]});
+           if (this.state.lang ==="EN") {
+                this.language = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            }
+            else{
+                this.language = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+            }
+            
             this.getUsers();
         }
     }
@@ -443,7 +470,7 @@ class Info extends React.Component {
             let id = JSON.parse(localStorage.getItem("userNameSession"));
             let postRequest = "id=" + id.id;
             var xhttp = new XMLHttpRequest();
-            xhttp.open("POST", "http://localhost/PHP/GetGlobal.php", true);
+            xhttp.open("POST", Domain+"/PHP/GetGlobal.php", true);
             xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
             xhttp.send(postRequest);
             xhttp.onreadystatechange = function () {
@@ -480,9 +507,9 @@ class Info extends React.Component {
                                         <table className="table table-hover text-nowrap">
                                             <thead>
                                                 <tr>
-                                                    <th>Name</th>
+                                                    <th><Translate word="Name"/></th>
                                                     <th>Id</th>
-                                                    <th>Workspace Id</th>
+                                                    <th><Translate word="Workspace Id"/></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -504,22 +531,21 @@ class Info extends React.Component {
 
                                         <div className="row w-50">
                                             <select className="col-sm" ref={select => { this.select = select }}>
-                                                <option>- Month -</option>
-                                                <option value="01">January</option>
-                                                <option value="02">Febuary</option>
-                                                <option value="03">March</option>
-                                                <option value="04">April</option>
-                                                <option value="05">May</option>
-                                                <option value="06">June</option>
-                                                <option value="07">July</option>
-                                                <option value="08">August</option>
-                                                <option value="09">September</option>
-                                                <option value="10">October</option>
-                                                <option value="11">November</option>
-                                                <option value="12">December</option>
+                                            <   option value="01">{this.language[0]}</option>
+                                                <option value="02">{this.language[1]}</option>
+                                                <option value="03">{this.language[2]}</option>
+                                                <option value="04">{this.language[3]}</option>
+                                                <option value="05">{this.language[4]}</option>
+                                                <option value="06">{this.language[5]}</option>
+                                                <option value="07">{this.language[6]}</option>
+                                                <option value="08">{this.language[7]}</option>
+                                                <option value="09">{this.language[8]}</option>
+                                                <option value="10">{this.language[9]}</option>
+                                                <option value="11">{this.language[10]}</option>
+                                                <option value="12">{this.language[11]}</option>
                                             </select>
                                             <select ref={year => { this.year = year }} className="col-sm ">
-                                                <option>- Year -</option>
+                                                <option>-Year-</option>
                                                 <option value={this.currentYear} selected>{this.currentYear}</option>
                                                 <option value={this.currentYear - 1}>{this.currentYear - 1}</option>
                                                 <option value={this.currentYear - 2}>{this.currentYear - 2}</option>
@@ -527,8 +553,8 @@ class Info extends React.Component {
 
                                             </select>
 
-                                            <button className="col-sm btn bg-primary" onClick={this.filterDate}>Search</button>
-                                            <button className="col-sm btn bg-secondary text-white" onClick={this.printData}>Print table</button>
+                                            <button className="col-sm btn bg-primary" onClick={this.filterDate}><Translate word="Search"/></button>
+                                            <button className="col-sm btn bg-secondary text-white" onClick={this.printData}><Translate word="Print table"/></button>
                                         </div>
 
                                         <h2 className=" mt-2" style={{ display: this.state.display, textAlign: "center" }}>{this.state.name}</h2>
@@ -538,12 +564,12 @@ class Info extends React.Component {
                                         <table className="table table-head-fixed text-nowrap" >
                                             <thead>
                                                 <tr>
-                                                    <th>Start Date</th>
-                                                    <th>Start 1ºTurn</th>
-                                                    <th>End 1ºTurn</th>
-                                                    <th>Start 2ºTurn</th>
-                                                    <th>End 2ºTurn</th>
-                                                    <th>Duration</th>
+                                                    <th><Translate word="Start Date"/></th>
+                                                    <th><Translate word="Start 1ºTurn"/></th>
+                                                    <th><Translate word="End 1ºTurn"/></th>
+                                                    <th><Translate word="Start 2ºTurn"/></th>
+                                                    <th><Translate word="End 2ºTurn"/></th>
+                                                    <th><Translate word="Duration"/></th>
 
 
                                                 </tr>
@@ -560,7 +586,7 @@ class Info extends React.Component {
                         {/* @@@@@@@@@@@@@@@@@@@ G E N E R A T E   C H A R T @@@@@@@  */}
                         <div className="card card-primary">
                             <div className="card-header">
-                                <h3 className="card-title">March</h3>
+                                <h3 className="card-title"><Translate word="Chart"/></h3>
 
                                 <div className="card-tools">
                                     <button type="button" className="btn btn-tool" data-card-widget="collapse"><i className="fas fa-minus"></i>
