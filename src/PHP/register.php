@@ -2,8 +2,7 @@
     require_once("connection.php"); 
     $validate = True;
     $new_connection = connection();
-    //---TEST
-    //$_POST=["email"=>"admin45@gmail.com","pass"=>"1234","submit"=>"Apply","confpass"=>"1234","lastname"=>"Gazykanov","name"=>"Ruslan","company"=>"Comerline","extra"=>"appDeveloper"];
+    $_POST=["email"=>"admin45@gmail.com","pass"=>"1234","submit"=>"Apply","confpass"=>"1234","lastname"=>"Gazykanov","name"=>"Ruslan","company"=>"Comerline","extra"=>"appDeveloper"];
     if (isset($_POST["submit"])) {
         foreach ($_POST as $key => $value) {
             if (empty($value)) {
@@ -13,12 +12,10 @@
                 echo json_encode($answer);
             }
         }
-
     }
     if ($validate) {
         send_info();
     }
-    
 
     function send_info(){
         global $new_connection;
@@ -50,7 +47,7 @@
                     $sql = "INSERT INTO Users(name, lastname, pass, email, company,description) VALUES(:name, :lastname,:pass,:email,:company,:extra)";
                     $connection = $new_connection->prepare($sql);
                     $connection->execute(array(':name' => $name, ':lastname' => $lastname,':pass'=>$pass,':email'=>$email,':company'=>$company,':extra'=>$extra));
-                    //Fetching the new id to included in the answer
+                        //Fetching the new id to included in the answer
                     $sql = "SELECT id FROM Users WHERE email = :email";
                     $connection = $new_connection->prepare($sql);
                     $connection->execute(array(":email" => $email));
@@ -61,7 +58,7 @@
                     $connection = $new_connection->prepare($sql);
                     $connection->execute(array(':id' => $id ));
 
-                    //GOOD ANSWER
+                        //GOOD ANSWER
                     $answer = ["success"=>"true","name"=>$name,"warning"=>"Welcome", "email"=>$email,"id"=>$id, "company"=>$company, "extra"=>$extra];
                     echo json_encode($answer);
                 }
@@ -69,14 +66,12 @@
                     $answer = ["success"=>"false","name"=>"","warning"=>"Register Failed! This user already exist."];
                     echo json_encode($answer);
                 }
-               
+                
             }
         }
         else{
             $answer = ["success"=>"false","name"=>"","warning"=>$email." is not a valid email address"];
             echo json_encode($answer);
-        }
-        
-        
+        } 
     } 
 ?>
