@@ -23,9 +23,7 @@ function changeLenguage(lang){
       resources,
       lng: lang,
       fallbackLng: lang, 
-
       keySeparator: false, 
-
       interpolation: {
         escapeValue: false 
       }
@@ -67,7 +65,6 @@ export class MyProvider extends Component {
           xhttp.onreadystatechange = function () {
               if (this.readyState == 4 && this.status == 200) {
                   let result = JSON.parse(this.responseText);
-                  console.log(result);
                   myCallback(result);
               }
           };

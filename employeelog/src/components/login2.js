@@ -66,6 +66,7 @@ class Login2 extends React.Component {
                                                 value.submit(this.data)
                                             }
                                             }>
+                                            
                                             <Translate word="LOG IN"/>
                                         </button>
                                     </div>
