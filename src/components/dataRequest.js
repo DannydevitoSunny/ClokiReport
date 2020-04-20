@@ -1,7 +1,7 @@
 import React from 'react';
 import './Custom_styles/style_one.css'
 import { Bar } from 'react-chartjs-2';
-import { Translate,MyContext,Domain} from "./globalConfig.js";
+import { Translate, MyContext, Domain } from "./globalConfig.js";
 
 class Info extends React.Component {
     constructor(props) {
@@ -15,10 +15,10 @@ class Info extends React.Component {
         this.logResponse = [];
         this.keysDate = [];
         this.state = {
-            lang:"",
-            Company:"",
-            CIF:"",
-            breakTime:"",
+            lang: "",
+            Company: "",
+            CIF: "",
+            breakTime: "",
             display: "none",
             name: "",
             usersData: "",
@@ -29,7 +29,7 @@ class Info extends React.Component {
             selectedUser: "",
             workspace: "",
             goodKey: "",
-            currentKey:"",
+            currentKey: "",
             id: "",
             users: [],
             data: {
@@ -90,7 +90,7 @@ class Info extends React.Component {
 
         this.getUsers = () => {
             //New request clear the old data (refresh)
-            
+
             this.logResponse = [];
             this.setState({ users: [] });
             let url = 'https://api.clockify.me/api/v1/workspaces/5c334808b079874ebdd7c345/users';
@@ -345,10 +345,10 @@ class Info extends React.Component {
                             <td className="cell100 column1">{this.LOGS[0][date][0][0]}</td>
                             <td className="cell100 column2">{this.LOGS[0][date][0][1]}</td>
                             <td className="cell100 column3">{this.LOGS[0][date][0][2]}</td>
-                            <td className="cell100 column4"><div style={{ width:"100%"}}></div></td>
+                            <td className="cell100 column4"><div style={{ width: "100%" }}></div></td>
                             <td className="cell100 column5">{this.LOGS[0][date][0][3]}</td>
                             <td className="cell100 column6">{(this.LOGS[0][date][0][6] == 2) ? (this.LOGS[0][date][lastTask][4]) : ("0")}</td>
-                            <td className="cell100 column7"><div style={{ width:"100%"}}></div></td>
+                            <td className="cell100 column7"><div style={{ width: "100%" }}></div></td>
                             <td className="cell100 column8">{this.LOGS[0][date][0][5]}</td>
 
                         </tr>
@@ -358,13 +358,13 @@ class Info extends React.Component {
         }
 
         this.printData = () => {
-            let translatePrintData=[];
-            let spanishLaw ="En cumplimiento de la obligación establecida en el Art. 35.5  del Real Decreto Legislativo 2/2015 de 23 de Octubre, por el que se aprueba eltexto refundido del la Ley del Estatuto de los Trabajadores"
-            let otherCountry= "";
-            if (this.state.lang ==="EN") {
-                translatePrintData = ['Date Report', 'Employee', otherCountry ];
+            let translatePrintData = [];
+            let spanishLaw = "En cumplimiento de la obligación establecida en el Art. 35.5  del Real Decreto Legislativo 2/2015 de 23 de Octubre, por el que se aprueba eltexto refundido del la Ley del Estatuto de los Trabajadores"
+            let otherCountry = "";
+            if (this.state.lang === "EN") {
+                translatePrintData = ['Date Report', 'Employee', otherCountry];
             }
-            else{
+            else {
                 translatePrintData = ['Fecha Reporte', 'Empleado', spanishLaw];
             }
             let style = '<style>body{font-family:sans-serif; font-size: 0.9em; }\
@@ -403,14 +403,14 @@ class Info extends React.Component {
             let newWin = window.open();
             newWin.document.write('<head>' + style + '</head>')
             newWin.document.write("<body>\
-                <section class='content'><h2 style='color:#3366ff'>"+this.state.Company+"</h2>");
+                <section class='content'><h2 style='color:#3366ff'>"+ this.state.Company + "</h2>");
             newWin.document.write('<div class="contentGrid">\
-                                        <span><b>'+translatePrintData[0]+': </b>' + this.year.value + '/' + this.select.value + ',\</span>\
-                                        <span><b>CIF:</b> '+this.state.CIF+'</span>\
-                                        <span>DNI/NIE :<div style="border-bottom:1px solid;"></div></span>\
-                                        <b>'+translatePrintData[1]+' :'+ this.state.name + '</b>\
+                                        <span><b>'+ translatePrintData[0] + ': </b>' + this.year.value + '/' + this.select.value + '\</span>\
+                                        <span><b>CIF: </b> '+ this.state.CIF + '</span>\
+                                        <span>DNI/NIE: <div style="border-bottom:1px solid;"></div></span>\
+                                        <b>'+ translatePrintData[1] + ': ' + this.state.name + '</b>\
                                     </div>\
-            <div style="width:50%;">' + this.div.innerHTML + '</div><p  style="width:40%;">'+translatePrintData[2]+'</p>\
+            <div style="width:50%;">' + this.div.innerHTML + '</div><p  style="width:40%;">' + translatePrintData[2] + '</p>\
             </section>\
             <footer>\
             </footer></body>');
@@ -453,30 +453,28 @@ class Info extends React.Component {
 
         }
         this.language = [];
-        this.update=(r)=>{
-            this.setState({currentKey:r["apikey"]});
-            this.setState({breakTime:r["breakTime"]});
-            this.setState({Company:r["company"]});
-            this.setState({lang:r["lang"]});
-            this.setState({CIF:r["CIF"]});
-           if (this.state.lang ==="EN") {
+        this.update = (r) => {
+            this.setState({ currentKey: r["apikey"] });
+            this.setState({ breakTime: r["breakTime"] });
+            this.setState({ Company: r["company"] });
+            this.setState({ lang: r["lang"] });
+            this.setState({ CIF: r["CIF"] });
+            if (this.state.lang === "EN") {
                 this.language = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             }
-            else{
-                this.language = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+            else {
+                this.language = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
             }
-            
+
             this.getUsers();
         }
     }
-    componentDidMount(){
-        //Need more security,--> add email to localStorage and id
-        //In back end I need to check  if they match
-        if (localStorage.getItem("userNameSession")!==null) {
+    componentDidMount() {
+        if (localStorage.getItem("userNameSession") !== null) {
             let id = JSON.parse(localStorage.getItem("userNameSession"));
             let postRequest = "id=" + id.id;
             var xhttp = new XMLHttpRequest();
-            xhttp.open("POST", Domain+"/PHP/GetGlobal.php", true);
+            xhttp.open("POST", Domain + "/PHP/GetGlobal.php", true);
             xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
             xhttp.send(postRequest);
             xhttp.onreadystatechange = function () {
@@ -485,12 +483,12 @@ class Info extends React.Component {
                     myCallback(result);
                 }
             };
-            let myCallback=(r)=>{
+            let myCallback = (r) => {
                 this.update(r)
             }
         }
-        
-        
+
+
     }
 
     render() {
@@ -505,17 +503,17 @@ class Info extends React.Component {
                             <div className="col-12">
                                 <div className="card">
                                     <div className="card-header text-center">
-                                    {this.state.Company}
-                                        <p className="text-danger">{this.state.goodKey}</p>                                 
+                                        {this.state.Company}
+                                        <p className="text-danger">{this.state.goodKey}</p>
                                     </div>
 
                                     <div className="card-body table-responsive p-0">
                                         <table className="table table-hover text-nowrap">
                                             <thead>
                                                 <tr>
-                                                    <th><Translate word="Name"/></th>
+                                                    <th><Translate word="Name" /></th>
                                                     <th>Id</th>
-                                                    <th><Translate word="Workspace Id"/></th>
+                                                    <th><Translate word="Workspace Id" /></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -559,8 +557,8 @@ class Info extends React.Component {
 
                                             </select>
 
-                                            <button className="col-sm btn bg-primary m-1" onClick={this.filterDate}><Translate word="Search"/></button>
-                                            <button className="col-sm btn bg-secondary text-white m-1" onClick={this.printData}><Translate word="Print table"/></button>
+                                            <button className="col-sm btn bg-primary m-1" onClick={this.filterDate}><Translate word="Search" /></button>
+                                            <button className="col-sm btn bg-secondary text-white m-1" onClick={this.printData}><Translate word="Print table" /></button>
                                         </div>
 
                                         <h2 className=" mt-2" style={{ display: this.state.display, textAlign: "center" }}>{this.state.name}</h2>
@@ -570,14 +568,14 @@ class Info extends React.Component {
                                         <table className="table table-head-fixed text-nowrap" >
                                             <thead>
                                                 <tr>
-                                                    <th><Translate word="Start Date"/></th>
-                                                    <th><Translate word="Start 1ºTurn"/></th>
-                                                    <th><Translate word="End 1ºTurn"/></th>
-                                                    <th><Translate word="Sign"/></th>
-                                                    <th><Translate word="Start 2ºTurn"/></th>
-                                                    <th><Translate word="End 2ºTurn"/></th>
-                                                    <th><Translate word="Sign"/></th>
-                                                    <th><Translate word="Duration"/></th>
+                                                    <th><Translate word="Start Date" /></th>
+                                                    <th><Translate word="Start 1ºTurn" /></th>
+                                                    <th><Translate word="End 1ºTurn" /></th>
+                                                    <th><Translate word="Sign" /></th>
+                                                    <th><Translate word="Start 2ºTurn" /></th>
+                                                    <th><Translate word="End 2ºTurn" /></th>
+                                                    <th><Translate word="Sign" /></th>
+                                                    <th><Translate word="Duration" /></th>
 
 
                                                 </tr>
@@ -594,7 +592,7 @@ class Info extends React.Component {
                         {/* @@@@@@@@@@@@@@@@@@@ G E N E R A T E   C H A R T @@@@@@@  */}
                         <div className="card card-primary">
                             <div className="card-header">
-                                <h3 className="card-title"><Translate word="Chart"/></h3>
+                                <h3 className="card-title"><Translate word="Chart" /></h3>
 
                                 <div className="card-tools">
                                     <button type="button" className="btn btn-tool" data-card-widget="collapse"><i className="fas fa-minus"></i>

@@ -1,9 +1,9 @@
 import React from "react";
 import './Custom_styles/style_one.css'
 import { Link } from "react-router-dom";
-import {MyContext, Domain } from "./globalConfig.js";
+import { MyContext, Domain } from "./globalConfig.js";
 import FacebookLog from './FacebookLog.js';
-import {Translate} from './LocateTrans.js'
+import { Translate } from './LocateTrans.js'
 
 
 
@@ -14,12 +14,12 @@ class Login2 extends React.Component {
             login: "",
             warning: "",
             origin: "log",
-            url: Domain+"/PHP/login.php",
+            url: Domain + "/PHP/login.php",
             name: "",
             reg: false
         }
     }
-    
+
 
     render() {
         return (
@@ -39,7 +39,7 @@ class Login2 extends React.Component {
                                 <div className="login100-form validate-form" >
                                     <div className="text-center p-t-10 p-b-30">
                                         <span className="text-warning">
-                                            <Translate word="Log in with email"/>
+                                            <Translate word="Log in with email" />
                                         </span>
                                         <p className="text-white">{value.state.Warning}</p>
                                     </div>
@@ -66,17 +66,17 @@ class Login2 extends React.Component {
                                                 value.submit(this.data)
                                             }
                                             }>
-                                            
-                                            <Translate word="LOG IN"/>
+
+                                            <Translate word="LOG IN" />
                                         </button>
                                     </div>
                                 </div>
                                 <div className="m-2">
                                     <span className="text-warning pr-4">
-                                    <Translate word="Don’t have an account?"/>
-                        </span>
+                                        <Translate word="Don’t have an account?" />
+                                    </span>
 
-                                    <Link to="/reg"><span href="" className="text-white pl-2 underline"> <u><Translate word="Sign up now"/></u></span></Link>
+                                    <Link to="/reg"><span href="" className="text-white pl-2 underline"> <u><Translate word="Sign up now" /></u></span></Link>
                                 </div>
 
 

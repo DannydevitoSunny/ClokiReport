@@ -1,32 +1,32 @@
 import React from 'react';
 import { Component } from 'react';
 import './Custom_styles/reg_style.css';
-import { MyContext,Domain } from "./globalConfig.js";
+import { MyContext, Domain } from "./globalConfig.js";
 
 
 class Register extends Component {
     constructor() {
         super()
         this.state = {
-            url: Domain+"/PHP/register.php",
+            url: Domain + "/PHP/register.php",
             origin: "reg",
-            
+
         }
         this.language = [];
         this.lang = navigator.language.substring(0, 2).toUpperCase();
-        if (this.lang ==="ES") {
-            this.language = ['Nombre *', 'Apellido *', 'Correo *', 'Contraseña *', 'Confirmar Contraseña *', 'Nombre de su Empresa *','Informacion Usuario','Informacion Adicional','Aplicar','Bienvenido a','Sobre su negocio'];
+        if (this.lang === "ES") {
+            this.language = ['Nombre *', 'Apellido *', 'Correo *', 'Contraseña *', 'Confirmar Contraseña *', 'Nombre de su Empresa *', 'Informacion Usuario', 'Informacion Adicional', 'Aplicar', 'Bienvenido a', 'Sobre su negocio'];
         }
-        else{
-            this.language = ['Your Name *','Your Lastname *','Your Email *','Password *','Confirm Password *','Your company name *','User Info','Additional Info', "Apply", "Welcome to",'About Your Business'];
+        else {
+            this.language = ['Your Name *', 'Your Lastname *', 'Your Email *', 'Password *', 'Confirm Password *', 'Your company name *', 'User Info', 'Additional Info', "Apply", "Welcome to", 'About Your Business'];
         }
     }
     render() {
         return (
             <MyContext.Consumer>
                 {(value) => (
-                    <div className="pt-4" style={{height:window.innerHeight-10,backgroundImage: 'linear-gradient(#3a67e3, lightblue)'}}>
-                        
+                    <div className="pt-4" style={{ height: window.innerHeight - 10, backgroundImage: 'linear-gradient(#3a67e3, lightblue)' }}>
+
                         <div className="form-style-5 mt-2" style={{ backgroundColor: " white  " }}>
                             <h2 className="text-primary" style={{ fontFamily: "'Lobster'" }}>{this.language[9]} ClokiReport</h2><br></br>
                             {value.state.Warning}
@@ -47,7 +47,7 @@ class Register extends Component {
                             </fieldset>
 
                             <div className="container-login100-form-btn">
-                                <button className="login100-form-btn bg-dark" style={{fontFamily:"sans-serif"}}
+                                <button className="login100-form-btn bg-dark" style={{ fontFamily: "sans-serif" }}
                                     onClick={() => {
 
                                         this.postRequest = "email=" + this.email.value + "&pass=" + this.pass.value + "&confpass=" + this.confpass.value + "&lastname=" + this.lastname.value + "&name=" + this.name.value + "&company=" + this.company.value + "&extra=" + this.extra.value;
