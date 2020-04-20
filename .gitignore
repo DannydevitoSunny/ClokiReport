@@ -7,7 +7,9 @@
 
 # testing
 /coverage
-
+/.vscode
+build.zip
+/false
 # production
 /build
 

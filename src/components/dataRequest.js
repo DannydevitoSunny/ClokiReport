@@ -345,9 +345,11 @@ class Info extends React.Component {
                             <td className="cell100 column1">{this.LOGS[0][date][0][0]}</td>
                             <td className="cell100 column2">{this.LOGS[0][date][0][1]}</td>
                             <td className="cell100 column3">{this.LOGS[0][date][0][2]}</td>
-                            <td className="cell100 column4">{this.LOGS[0][date][0][3]}</td>
-                            <td className="cell100 column4">{(this.LOGS[0][date][0][6] == 2) ? (this.LOGS[0][date][lastTask][4]) : ("0")}</td>
-                            <td className="cell100 column4">{this.LOGS[0][date][0][5]}</td>
+                            <td className="cell100 column4"><div style={{ width:"100%"}}></div></td>
+                            <td className="cell100 column5">{this.LOGS[0][date][0][3]}</td>
+                            <td className="cell100 column6">{(this.LOGS[0][date][0][6] == 2) ? (this.LOGS[0][date][lastTask][4]) : ("0")}</td>
+                            <td className="cell100 column7"><div style={{ width:"100%"}}></div></td>
+                            <td className="cell100 column8">{this.LOGS[0][date][0][5]}</td>
 
                         </tr>
                     )
@@ -357,11 +359,13 @@ class Info extends React.Component {
 
         this.printData = () => {
             let translatePrintData=[];
+            let spanishLaw ="En cumplimiento de la obligación establecida en el Art. 35.5  del Real Decreto Legislativo 2/2015 de 23 de Octubre, por el que se aprueba eltexto refundido del la Ley del Estatuto de los Trabajadores"
+            let otherCountry= "";
             if (this.state.lang ==="EN") {
-                translatePrintData = ['Date Report', 'Employee'];
+                translatePrintData = ['Date Report', 'Employee', otherCountry ];
             }
             else{
-                translatePrintData = ['Fecha Reporte', 'Empleado'];
+                translatePrintData = ['Fecha Reporte', 'Empleado', spanishLaw];
             }
             let style = '<style>body{font-family:sans-serif; font-size: 0.9em; }\
                             div table {\
@@ -406,8 +410,10 @@ class Info extends React.Component {
                                         <span>DNI/NIE :<div style="border-bottom:1px solid;"></div></span>\
                                         <b>'+translatePrintData[1]+' :'+ this.state.name + '</b>\
                                     </div>\
-            <div style="width:50%;">' + this.div.innerHTML + '</div></section>\
-            <footer><div style="margin-top:5px;width:15%; height:60px; border:0.2px solid grey;"><span style="color:lightblue;">Sing</span></div></footer></body>');
+            <div style="width:50%;">' + this.div.innerHTML + '</div><p  style="width:40%;">'+translatePrintData[2]+'</p>\
+            </section>\
+            <footer>\
+            </footer></body>');
             newWin.print();
 
 
@@ -529,9 +535,9 @@ class Info extends React.Component {
                                     <div className="card-header">
 
 
-                                        <div className="row w-50">
-                                            <select className="col-sm" ref={select => { this.select = select }}>
-                                            <   option value="01">{this.language[0]}</option>
+                                        <div className="row w-50 ">
+                                            <select className="col-sm m-1" ref={select => { this.select = select }}>
+                                                <option value="01">{this.language[0]}</option>
                                                 <option value="02">{this.language[1]}</option>
                                                 <option value="03">{this.language[2]}</option>
                                                 <option value="04">{this.language[3]}</option>
@@ -544,7 +550,7 @@ class Info extends React.Component {
                                                 <option value="11">{this.language[10]}</option>
                                                 <option value="12">{this.language[11]}</option>
                                             </select>
-                                            <select ref={year => { this.year = year }} className="col-sm ">
+                                            <select ref={year => { this.year = year }} className="col-sm m-1 ">
                                                 <option>-Year-</option>
                                                 <option value={this.currentYear} selected>{this.currentYear}</option>
                                                 <option value={this.currentYear - 1}>{this.currentYear - 1}</option>
@@ -553,8 +559,8 @@ class Info extends React.Component {
 
                                             </select>
 
-                                            <button className="col-sm btn bg-primary" onClick={this.filterDate}><Translate word="Search"/></button>
-                                            <button className="col-sm btn bg-secondary text-white" onClick={this.printData}><Translate word="Print table"/></button>
+                                            <button className="col-sm btn bg-primary m-1" onClick={this.filterDate}><Translate word="Search"/></button>
+                                            <button className="col-sm btn bg-secondary text-white m-1" onClick={this.printData}><Translate word="Print table"/></button>
                                         </div>
 
                                         <h2 className=" mt-2" style={{ display: this.state.display, textAlign: "center" }}>{this.state.name}</h2>
@@ -567,8 +573,10 @@ class Info extends React.Component {
                                                     <th><Translate word="Start Date"/></th>
                                                     <th><Translate word="Start 1ºTurn"/></th>
                                                     <th><Translate word="End 1ºTurn"/></th>
+                                                    <th><Translate word="Sign"/></th>
                                                     <th><Translate word="Start 2ºTurn"/></th>
                                                     <th><Translate word="End 2ºTurn"/></th>
+                                                    <th><Translate word="Sign"/></th>
                                                     <th><Translate word="Duration"/></th>
 
 

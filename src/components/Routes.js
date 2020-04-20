@@ -47,13 +47,11 @@ class RouteSS extends React.Component {
                                     <div className="sidebar">
 
                                         <div className="user-panel mt-3 pb-3 mb-3 d-flex">
-                                            <div className="image">
-
-                                            </div>
+                                            <div className="image"></div>{/* Space for Perfil Icon/photo */}
                                             <div className="info">
                                          
-                                                    <span href="" style={{ cursor: "pointer",}} className=" ml-2 btn-outline-secondary text-white font-weight-light" onClick={this.fun}>
-                                                        <i className="fas fa-bars"></i> <Translate word="Welcome" />  {value.state.UserName}
+                                                    <span href="" style={{ cursor: "pointer",}} className="  btn-outline-secondary text-white font-weight-light" onClick={this.fun}>
+                                                        <Translate word="Welcome" />  {value.state.UserName}
                                                     </span>
                                              
                                                

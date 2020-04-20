@@ -42,7 +42,8 @@ export var spanish = {
   "Log in with Facebook":"Inicia sesion con Facebook",
   "LOG IN":"Iniciar sesion",
   "Don’t have an account?":"¿Aun no tienes cuenta?",
-  "Sign up now":"Registrate Ahora"
+  "Sign up now":"Registrate Ahora",
+  "Sign":"Firma"
 
 
 
