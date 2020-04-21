@@ -33,3 +33,5 @@ and copy all the files to our root folder inside our domain, (ONLY FILES, NOT TH
 <p class="has-line-data" data-line-start="41" data-line-end="44">3.PHP file:<br>
 Now we need PHP folder, which is inside the project, we must move it in the same folder<br>
 where we move builded files</p>
+<p class="has-line-data" data-line-start="45" data-line-end="47">4.SQL file:<br>
+Is inside PHP folder</p>
