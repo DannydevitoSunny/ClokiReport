@@ -7,14 +7,11 @@
     DocumentRoot /var/www/html/ClokiReport/
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
-    Header set Access-Control-Allow-Origin &quot;*&quot;
-    Header always set Access-Control-Allow-Methods &quot;POST, PUT, GET, DELETE, OPT$
-    Header always set Access-Control-Allow-Headers &quot;Content-Type&quot;
 &lt;/VirtualHost&gt;
 </code></pre>
-<p class="has-line-data" data-line-start="17" data-line-end="19"><strong>etc/hosts configuration:</strong><br>
+<p class="has-line-data" data-line-start="14" data-line-end="16"><strong>etc/hosts configuration:</strong><br>
 127.0.0.1 clokiReport.test</p>
-<p class="has-line-data" data-line-start="20" data-line-end="22"><strong>Create this file inside domain root folder</strong><br>
+<p class="has-line-data" data-line-start="17" data-line-end="19"><strong>Create this file inside domain root folder</strong><br>
 .haccess configuration (Required to make React routes works in Apache):</p>
 <pre><code>RewriteEngine On
 RewriteBase /
@@ -23,16 +20,16 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
 RewriteRule ^.*$ / [L,QSA]
 </code></pre>
-<h3 class="code-line" data-line-start=30 data-line-end=31 ><a id="Make_it_work_30"></a>Make it work</h3>
-<p class="has-line-data" data-line-start="32" data-line-end="34">1.Get Dependencies:<br>
+<h3 class="code-line" data-line-start=27 data-line-end=28 ><a id="Make_it_work_27"></a>Make it work</h3>
+<p class="has-line-data" data-line-start="29" data-line-end="31">1.Get Dependencies:<br>
 After clone the repositorie, make : <strong>init npm</strong> inside the project</p>
-<p class="has-line-data" data-line-start="35" data-line-end="38">2.Env:<br>
+<p class="has-line-data" data-line-start="32" data-line-end="35">2.Env:<br>
 Once we have our dependencies now we should set the new DOMAIN,<br>
 there is an example inside .env.example</p>
-<p class="has-line-data" data-line-start="39" data-line-end="43">3.Build:<br>
+<p class="has-line-data" data-line-start="36" data-line-end="40">3.Build:<br>
 Now run : <strong>npm run build</strong><br>
 After execute previous command, we need go inside the project, open the folder build<br>
 and copy all the files to our root folder inside our domain, (ONLY FILES, NOT THE FOLDER)</p>
-<p class="has-line-data" data-line-start="44" data-line-end="47">3.PHP file:<br>
+<p class="has-line-data" data-line-start="41" data-line-end="44">3.PHP file:<br>
 Now we need PHP folder, which is inside the project, we must move it in the same folder<br>
 where we move builded files</p>
