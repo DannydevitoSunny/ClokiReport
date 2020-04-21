@@ -33,8 +33,17 @@ CREATE TABLE `Users` (
   `pass` varchar(170) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Users`
+--
+
+LOCK TABLES `Users` WRITE;
+/*!40000 ALTER TABLE `Users` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Users` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `config`
@@ -51,8 +60,17 @@ CREATE TABLE `config` (
   `CIF` varchar(70) NOT NULL DEFAULT 'Cif-Number',
   PRIMARY KEY (`id`),
   CONSTRAINT `foreign_config` FOREIGN KEY (`id`) REFERENCES `Users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `config`
+--
+
+LOCK TABLES `config` WRITE;
+/*!40000 ALTER TABLE `config` DISABLE KEYS */;
+/*!40000 ALTER TABLE `config` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `profilePictures`
@@ -70,6 +88,15 @@ CREATE TABLE `profilePictures` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `profilePictures`
+--
+
+LOCK TABLES `profilePictures` WRITE;
+/*!40000 ALTER TABLE `profilePictures` DISABLE KEYS */;
+/*!40000 ALTER TABLE `profilePictures` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Dumping routines for database 'CleanCloki'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -82,4 +109,4 @@ CREATE TABLE `profilePictures` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-21 12:27:56
+-- Dump completed on 2020-04-21 12:59:33
