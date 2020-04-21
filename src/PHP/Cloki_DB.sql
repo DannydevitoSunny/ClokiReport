@@ -1,6 +1,6 @@
 -- MySQL dump 10.16  Distrib 10.1.44-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: ClokiReport2
+-- Host: localhost    Database: CleanCloki
 -- ------------------------------------------------------
 -- Server version	10.1.44-MariaDB-0ubuntu0.18.04.1
 
@@ -70,7 +70,7 @@ CREATE TABLE `profilePictures` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping routines for database 'ClokiReport2'
+-- Dumping routines for database 'CleanCloki'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -82,4 +82,4 @@ CREATE TABLE `profilePictures` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-21 12:02:44
+-- Dump completed on 2020-04-21 12:27:56
