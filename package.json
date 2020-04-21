@@ -9,6 +9,7 @@
     "axios": "^0.19.2",
     "chart.js": "^2.9.3",
     "dependency-tree": "^7.2.1",
+    "dotenv": "^8.2.0",
     "i18next": "^19.4.2",
     "print-js": "^1.0.63",
     "react": "^16.13.0",

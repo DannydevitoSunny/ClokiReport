@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect, Route, Switch, Link, BrowserRouter as Router, } from "react-router-dom";
 import Info from './dataRequest.js'
-import Tweaks from './apiKey';
+import Tweaks from './configurationInsideApp';
 import FacebookLog from './FacebookLog.js';
 import { MyContext, Translate } from "./globalConfig.js";
 /* import Translate from './Translate.js'; */

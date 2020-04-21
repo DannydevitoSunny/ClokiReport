@@ -1,25 +1,46 @@
 
+### Example Configuration for Virtual HOST
+VirtulHost Configuration:
+<VirtualHost :80>
+    ServerAdmin admin@gmail.com
+    ServerName clokiReport.test
+    ServerAlias clokiReport
+    DocumentRoot /var/www/html/ClokiReport/
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
 
-<p class="has-line-data" data-line-start="1" data-line-end="13">VirtulHost Configuration:<br>
-&lt;VirtualHost :80&gt;<br>
-ServerAdmin <a href="mailto:admin@gmail.com">admin@gmail.com</a><br>
-ServerName clokiReport.test<br>
-ServerAlias clokiReport<br>
-DocumentRoot /var/www/html/ClokiReport/<br>
-ErrorLog ${APACHE_LOG_DIR}/error.log<br>
-CustomLog ${APACHE_LOG_DIR}/access.log combined<br>
-Header set Access-Control-Allow-Origin “”<br>
-Header always set Access-Control-Allow-Methods &quot;POST, PUT, GET, DELETE, OPT$<br>
-Header always set Access-Control-Allow-Headers “Content-Type”<br>
-&lt;/VirtualHost&gt;</p>
-<p class="has-line-data" data-line-start="14" data-line-end="16">etc/hosts configuration:<br>
-127.0.0.1 clokiReport.test</p>
-<p class="has-line-data" data-line-start="17" data-line-end="19">/var/www/html/ClokiReport/.haccess<br>
-.haccess configuration (Required to make React routes works in Apache):</p>
-<p class="has-line-data" data-line-start="20" data-line-end="26">RewriteEngine On<br>
-RewriteBase /<br>
-RewriteCond %{REQUEST_FILENAME} !-f<br>
-RewriteCond %{REQUEST_FILENAME} !-d<br>
-RewriteCond %{REQUEST_FILENAME} !-l<br>
-RewriteRule ^.*$ / [L,QSA]</p>
+etc/hosts configuration:
+127.0.0.1 clokiReport.test
+
+**Create this file inside domain root folder**
+.haccess configuration (Required to make React routes works in Apache):
+
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-l
+    RewriteRule ^.*$ / [L,QSA]
+
+### Make it work
+
+1.Get Dependencies:
+After clone the repositorie, make : **init npm** inside the project
+
+2.Env:
+Once we have our dependencies now we should set the new DOMAIN,
+there is an example inside .env.example
+
+3.Build:
+Now run : **npm run build**
+After execute previous command, we need go inside the project, open the folder build
+and copy all the files to our root folder inside our domain, (ONLY FILES, NOT THE FOLDER)
+
+3.PHP file:
+Now we need PHP folder, which is inside the project, we must move it in the same folder
+where we move builded files
+
+
+
 

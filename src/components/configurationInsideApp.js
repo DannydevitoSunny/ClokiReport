@@ -8,7 +8,7 @@ class ApiKey extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      url: Domain+"/PHP/SetGlobal.php",
+      url: Domain+"/PHP/setGlobal.php",
       origin: "conf",
     }
   }

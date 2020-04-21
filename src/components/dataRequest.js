@@ -16,6 +16,7 @@ class Info extends React.Component {
         this.keysDate = [];
         this.state = {
             lang: "",
+            hideSing: "none",
             Company: "",
             CIF: "",
             breakTime: "",
@@ -345,11 +346,13 @@ class Info extends React.Component {
                             <td className="cell100 column1">{this.LOGS[0][date][0][0]}</td>
                             <td className="cell100 column2">{this.LOGS[0][date][0][1]}</td>
                             <td className="cell100 column3">{this.LOGS[0][date][0][2]}</td>
-                            <td className="cell100 column4"><div style={{ width: "100%" }}></div></td>
+                            <td className="cell100 column4"><div style={{ display: this.state.hideSing }}>HOla</div></td>
                             <td className="cell100 column5">{this.LOGS[0][date][0][3]}</td>
-                            <td className="cell100 column6">{(this.LOGS[0][date][0][6] == 2) ? (this.LOGS[0][date][lastTask][4]) : ("0")}</td>
-                            <td className="cell100 column7"><div style={{ width: "100%" }}></div></td>
+                            <td className="cell100 column6">{this.LOGS[0][date][0][4]}</td>
+                            <td className="cell100 column7"><div style={{ display: this.state.hideSing }}>Adios</div></td>
                             <td className="cell100 column8">{this.LOGS[0][date][0][5]}</td>
+
+
 
                         </tr>
                     )
@@ -358,6 +361,8 @@ class Info extends React.Component {
         }
 
         this.printData = () => {
+            this.setState({ hideSing: "block" });
+
             let translatePrintData = [];
             let spanishLaw = "En cumplimiento de la obligación establecida en el Art. 35.5  del Real Decreto Legislativo 2/2015 de 23 de Octubre, por el que se aprueba eltexto refundido del la Ley del Estatuto de los Trabajadores"
             let otherCountry = "";
@@ -415,6 +420,9 @@ class Info extends React.Component {
             <footer>\
             </footer></body>');
             newWin.print();
+
+            this.setState({ hideSing: "none" });
+
 
 
         }
@@ -474,7 +482,7 @@ class Info extends React.Component {
             let id = JSON.parse(localStorage.getItem("userNameSession"));
             let postRequest = "id=" + id.id;
             var xhttp = new XMLHttpRequest();
-            xhttp.open("POST", Domain + "/PHP/GetGlobal.php", true);
+            xhttp.open("POST", Domain + "/PHP/getGlobal.php", true);
             xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
             xhttp.send(postRequest);
             xhttp.onreadystatechange = function () {
@@ -571,10 +579,10 @@ class Info extends React.Component {
                                                     <th><Translate word="Start Date" /></th>
                                                     <th><Translate word="Start 1ºTurn" /></th>
                                                     <th><Translate word="End 1ºTurn" /></th>
-                                                    <th><Translate word="Sign" /></th>
+                                                    <th><div style={{ display: this.state.hideSing }}><Translate word="Sign" /></div></th>
                                                     <th><Translate word="Start 2ºTurn" /></th>
                                                     <th><Translate word="End 2ºTurn" /></th>
-                                                    <th><Translate word="Sign" /></th>
+                                                    <th><div style={{ display: this.state.hideSing }}><Translate word="Sign" /></div></th>
                                                     <th><Translate word="Duration" /></th>
 
 

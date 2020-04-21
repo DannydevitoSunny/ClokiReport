@@ -1,11 +1,9 @@
 <?php
     function connection(){
-      header('Access-Control-Allow-Origin: *');
       $dbName = "ClokiReport2";
       $host = "127.0.0.1";
       $user = "Master";
       $pass = "clokireact";
-
 
       try {
         $db = new PDO('mysql:host=' . $host . ';dbname=' . $dbName . ';charset=utf8', $user, $pass);
@@ -16,4 +14,3 @@
         die("Error!: " . $e->getMessage() . "<br/>");
       }
     }
-?>

@@ -10,7 +10,8 @@
 /.vscode
 build.zip
 /false
-/src/PHP/false
+src/PHP/false
+.env
 # production
 /build
 

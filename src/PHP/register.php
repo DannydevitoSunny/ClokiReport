@@ -16,7 +16,6 @@
     if ($validate) {
         send_info();
     }
-
     function send_info(){
         global $new_connection;
         global $validate;

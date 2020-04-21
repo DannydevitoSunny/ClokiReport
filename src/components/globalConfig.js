@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import i18n from "i18next";
 import { useTranslation, initReactI18next } from "react-i18next";
 import { spanish } from './Translate.js';
-export var Domain = "http://clokireport.test/";
+require('dotenv').config()
+export var Domain = process.env.REACT_APP_API_ENDPOINT
 var lang = navigator.language.substring(0, 2).toUpperCase();
 
 const resources = {
@@ -112,7 +113,7 @@ export class MyProvider extends Component {
     this.updateGlobal = () => {
       let id = JSON.parse(localStorage.getItem("userNameSession"));
       let postRequest = "&id=" + id.id;
-      let data = [Domain+"/PHP/GetGlobal.php", "update", postRequest]
+      let data = [Domain+"/PHP/getGlobal.php", "update", postRequest]
       this.request(data);
 
     }
@@ -129,6 +130,7 @@ export class MyProvider extends Component {
       this.setState({ Company: r["company"] });
       this.setState({ CIF: r["CIF"] });
       lang = this.state.lang.toString();
+   
     }
   }
 

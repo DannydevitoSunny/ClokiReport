@@ -39,10 +39,6 @@ if (isset($_POST)) {
 		$answer = ["success"=>"true"];
 		echo json_encode($answer);
 	}
-	
-	
-
-
 }
 
 ?>
