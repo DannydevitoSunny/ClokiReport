@@ -34,7 +34,7 @@ and copy all the files to our root folder inside our domain, (ONLY FILES, NOT TH
 Now we need PHP folder, which is inside the project, we must move it in the same folder<br>
 where we move builded files</p>
 <p class="has-line-data" data-line-start="45" data-line-end="47">4.SQL_DB file:<br>
-Is inside <strong>PHP folder</strong>, as well there you find <strong>connection.php</strong> to set your own configuration</p>
+It is inside <strong>PHP folder</strong>, as well there you find <strong>connection.php</strong> to set your Sunny own configuration</p>
 
 
 
