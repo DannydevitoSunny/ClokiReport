@@ -175,8 +175,6 @@ class Info extends React.Component {
                 let duration = "";
                 let firstTurn = 0;
                 let secondTurn = 0;
-                let numTasks = 1;
-
 
                 for (let z = this.logResponse[x].length - 1; z >= 0; z--) {// ----> LOOP  OF  T A S K S
                     let reg = [] //new task
@@ -216,7 +214,7 @@ class Info extends React.Component {
                     /* @@@@@@@@@@@@@@@@-- ADDING REGISTER WITH GOOD DATA --@@@@@@@@@@@@@ */
 
                     secondTurn = endH;
-                    reg = [startDate, startH, endH, firstTurn, secondTurn, duration, numTasks];
+                    reg = [startDate, startH, endH, firstTurn, secondTurn, duration];
                     if (startDate !== newStartDate) {
                         newStartDate = startDate; //New date as index
                         this.LOGS[0][newStartDate] = []; //CREATING NEW START DATE ARRAY
@@ -304,13 +302,16 @@ class Info extends React.Component {
                                 }
                                 else {
                                     this.LOGS[0][date][0][3] = startHourDateFormat //Start SECOND turn
-                                    this.LOGS[0][date][0][6] = 2
                                     this.endTurn = true;
                                 }
                             }
 
                         }
-
+                        if (this.endTurn === false){
+                            let lastTask = this.LOGS[0][date].length - 1;
+                            this.LOGS[0][date][lastTask][4] = 0;
+                        }
+                        
                         let d = new Date();
                         d.setHours(hour);
                         d.setMinutes(min);
@@ -346,10 +347,10 @@ class Info extends React.Component {
                             <td className="cell100 column1">{this.LOGS[0][date][0][0]}</td>
                             <td className="cell100 column2">{this.LOGS[0][date][0][1]}</td>
                             <td className="cell100 column3">{this.LOGS[0][date][0][2]}</td>
-                            <td className="cell100 column4"><div style={{ display: this.state.hideSing }}>HOla</div></td>
+                            <td className="cell100 column4"><div style={{ display: this.state.hideSing }}></div></td>
                             <td className="cell100 column5">{this.LOGS[0][date][0][3]}</td>
-                            <td className="cell100 column6">{this.LOGS[0][date][0][4]}</td>
-                            <td className="cell100 column7"><div style={{ display: this.state.hideSing }}>Adios</div></td>
+                            <td className="cell100 column6">{this.LOGS[0][date][lastTask][4]}</td>
+                            <td className="cell100 column7"><div style={{ display: this.state.hideSing }}></div></td>
                             <td className="cell100 column8">{this.LOGS[0][date][0][5]}</td>
 
 
