@@ -1,9 +1,9 @@
 <?php
-    require_once(“connection.php”);
+    require_once("connection.php");
     $new_connection = connection();
-    if (!empty($_POST[“email”])) {
-        $email = $_POST[“email”];
-        $sql = “SELECT * FROM Users WHERE email = :email”;
+    if (!empty($_POST["email"])) {
+        $email = $_POST["email"];
+        $sql = "SELECT * FROM Users WHERE email = :email";
 
         if(filter_var($email, FILTER_VALIDATE_EMAIL)){
             $connection = $new_connection->prepare($sql);

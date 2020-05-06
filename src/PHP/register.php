@@ -2,7 +2,8 @@
     require_once("connection.php"); 
     $validate = True;
     $new_connection = connection();
-    $_POST=["email"=>"admin45@gmail.com","pass"=>"1234","submit"=>"Apply","confpass"=>"1234","lastname"=>"Gazykanov","name"=>"Ruslan","company"=>"Comerline","extra"=>"appDeveloper"];
+    //Test
+    //$_POST=["email"=>"admin45@gmail.com","pass"=>"1234","submit"=>"Apply","confpass"=>"1234","lastname"=>"Gazykanov","name"=>"Ruslan","company"=>"Comerline","extra"=>"appDeveloper"];
     if (isset($_POST["submit"])) {
         foreach ($_POST as $key => $value) {
             if (empty($value)) {

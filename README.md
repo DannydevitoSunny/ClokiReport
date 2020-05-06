@@ -22,7 +22,7 @@ RewriteRule ^.*$ / [L,QSA]
 </code></pre>
 <h3 class="code-line" data-line-start=27 data-line-end=28 ><a id="Make_it_work_27"></a>Make it work</h3>
 <p class="has-line-data" data-line-start="29" data-line-end="31">1.Get Dependencies:<br>
-After clone the repositorie, make : <strong>init npm</strong> inside the project</p>
+After clone the repositorie, make : <strong>npm install</strong> inside the project</p>
 <p class="has-line-data" data-line-start="32" data-line-end="35">2.Env:<br>
 Once we have our dependencies now we should set the new DOMAIN,<br>
 there is an example inside .env.example</p>
@@ -34,7 +34,7 @@ and copy all the files to our root folder inside our domain, (ONLY FILES, NOT TH
 Now we need PHP folder, which is inside the project, we must move it in the same folder<br>
 where we move builded files</p>
 <p class="has-line-data" data-line-start="45" data-line-end="47">4.SQL_DB file:<br>
-It is inside <strong>PHP folder</strong>, as well there you find <strong>connection.php</strong> to set your Sunny own configuration</p>
+It is inside <strong>PHP folder</strong>, as well there you find <strong>connection.php</strong> to set your own DB configuration</p>
 
 
 
